@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jalease <jalease@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/11 15:13:43 by jalease           #+#    #+#             */
-/*   Updated: 2021/01/11 15:13:47 by jalease          ###   ########.fr       */
+/*   Created: 2020/10/29 12:03:31 by jalease           #+#    #+#             */
+/*   Updated: 2020/10/29 15:05:40 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int main(int argc, char *argv[])
+void	ft_bzero(void *s, size_t n)
 {
-	if (argc == 2 || argc == 3)
-	{
-		t_struct *map = (t_struct*)ft_parser(argv[1]);
+	size_t i;
 
-	}
-	else
+	i = 0;
+	if (n > 0)
 	{
-		//error
+		while (i < n)
+		{
+			*((char*)s + i) = 0;
+			i++;
+		}
 	}
-	return (0);
 }

@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_toupper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jalease <jalease@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/11 15:13:43 by jalease           #+#    #+#             */
-/*   Updated: 2021/01/11 15:13:47 by jalease          ###   ########.fr       */
+/*   Created: 2020/11/01 17:05:08 by jalease           #+#    #+#             */
+/*   Updated: 2020/11/01 18:51:03 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int main(int argc, char *argv[])
+int	ft_toupper(int c)
 {
-	if (argc == 2 || argc == 3)
-	{
-		t_struct *map = (t_struct*)ft_parser(argv[1]);
-
-	}
+	if (c >= 97 && c <= 122)
+		return (c - 32);
 	else
-	{
-		//error
-	}
-	return (0);
+		return (c);
 }

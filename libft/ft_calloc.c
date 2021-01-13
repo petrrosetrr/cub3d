@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jalease <jalease@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/11 15:13:43 by jalease           #+#    #+#             */
-/*   Updated: 2021/01/11 15:13:47 by jalease          ###   ########.fr       */
+/*   Created: 2020/11/01 22:35:55 by jalease           #+#    #+#             */
+/*   Updated: 2020/11/03 00:07:44 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include <stdlib.h>
+#include "libft.h"
 
-int main(int argc, char *argv[])
+void	*ft_calloc(size_t count, size_t size)
 {
-	if (argc == 2 || argc == 3)
-	{
-		t_struct *map = (t_struct*)ft_parser(argv[1]);
+	unsigned char	*ptr;
+	size_t			i;
 
-	}
-	else
+	i = 0;
+	if ((ptr = (unsigned char*)malloc(size * count)) != NULL)
 	{
-		//error
+		while (i < size * count)
+			ptr[i++] = '\0';
 	}
-	return (0);
+	return (ptr);
 }

@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jalease <jalease@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/11 15:13:43 by jalease           #+#    #+#             */
-/*   Updated: 2021/01/11 15:13:47 by jalease          ###   ########.fr       */
+/*   Created: 2020/10/30 16:46:57 by jalease           #+#    #+#             */
+/*   Updated: 2020/11/02 22:53:01 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int main(int argc, char *argv[])
+size_t	ft_strlen(const char *s)
 {
-	if (argc == 2 || argc == 3)
-	{
-		t_struct *map = (t_struct*)ft_parser(argv[1]);
+	size_t i;
 
-	}
-	else
-	{
-		//error
-	}
-	return (0);
+	i = 0;
+	while (*(s + i) != 0)
+		i++;
+	return (i);
 }

@@ -1,27 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jalease <jalease@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/11 15:13:43 by jalease           #+#    #+#             */
-/*   Updated: 2021/01/11 15:13:47 by jalease          ###   ########.fr       */
+/*   Created: 2020/11/03 16:58:00 by jalease           #+#    #+#             */
+/*   Updated: 2020/11/03 17:17:51 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
+#include <unistd.h>
 
-int main(int argc, char *argv[])
+void	ft_putchar_fd(char c, int fd)
 {
-	if (argc == 2 || argc == 3)
-	{
-		t_struct *map = (t_struct*)ft_parser(argv[1]);
-
-	}
-	else
-	{
-		//error
-	}
-	return (0);
+	write(fd, &c, sizeof(char));
 }
