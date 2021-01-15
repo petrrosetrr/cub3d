@@ -10,13 +10,12 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	=	*.c ./gnl/*.c
-
+SRCS	=	main.c ./parser/ft_parser.c ./gnl/get_next_line.c ./gnl/get_next_line_utils.c
 NAME    =   cub3d.a
 HEAD	=	cub3d.h
 LIBFT	=	./libft/libft.a
 OBJS    =   $(SRCS:.c=.o)
-GCC     =   gcc -Wall -Wextra -Werror
+GCC     =   gcc -Wall -Wextra -Werror -g
 RM      =   rm -f
 C       =   -c
 O       =   -o
@@ -29,7 +28,7 @@ all:		$(NAME)
 
 $(NAME):    $(OBJS) $(HEAD)
 			make -C ./libft
-			$(GCC) $(OBJS) ./libft/*.a -o $(NAME)
+			$(GCC) $(OBJS) ./libft/libft.a -o $(NAME)
 clean:
 			$(RM) $(OBJS)
 			make clean -C ./libft

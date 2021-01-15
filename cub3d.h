@@ -7,17 +7,19 @@
 # include <math.h>
 # include "libft/libft.h"
 # include "gnl/get_next_line.h"
+# include <stdio.h>
 
 typedef struct	s_struct
 {
-	int			res[2];
+	long int			res[2];
 	char		*no;
 	char		*so;
 	char		*we;
 	char		*ea;
 	char		*s;
-	int			floor[3];
-	int			ceiling[3];
+	long int    floor[3];
+	long int	ceiling[3];
 	char		**map;
 }				t_struct;
+void *ft_parser(char *file_name);
 #endif
