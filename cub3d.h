@@ -20,6 +20,7 @@ typedef struct	s_struct
 	long int    floor[3];
 	long int	ceiling[3];
 	char		**map;
+	int			map_size;
 }				t_struct;
 void *ft_parser(char *file_name);
 #endif

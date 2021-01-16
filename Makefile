@@ -10,7 +10,9 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	=	main.c ./parser/ft_parser.c ./gnl/get_next_line.c ./gnl/get_next_line_utils.c
+SRCS	=	main.c ./parser/ft_parser.c ./gnl/get_next_line.c \
+			./gnl/get_next_line_utils.c
+			 #./map_validation.c
 NAME    =   cub3d.a
 HEAD	=	cub3d.h
 LIBFT	=	./libft/libft.a
