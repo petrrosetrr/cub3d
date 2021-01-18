@@ -56,6 +56,7 @@ int file_to_array(char *file_name, t_struct *map_struct)
 		map_struct->map[i++] = line;
 	map_struct->map[i++] = line;
 	map_struct->map[i] = NULL;
+	close(fd);
 	return (1);
 }
 int is_only_digits (char *line)
