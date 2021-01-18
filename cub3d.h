@@ -23,5 +23,5 @@ typedef struct	s_struct
 	int			map_start;
 }				t_struct;
 t_struct		ft_parser(char *file_name);
-int				is_map_valid(t_struct *map_struct);
+int				map_validation(t_struct *map_struct);
 #endif

@@ -28,6 +28,11 @@ int main(int argc, char *argv[])
         printf("map start: %d\n", map.map_start);
         printf("floor: %ld %ld %ld\n", map.floor[0],map.floor[1],map.floor[2]);
         printf("ceiling: %ld %ld %ld\n\n", map.ceiling[0],map.ceiling[1],map.ceiling[2]);
+        if (map_validation(&map) == 1)
+		{
+        	printf("vAlId map\n");
+		}
+        i = map.map_start;
         while(map.map[i] != NULL) {
             printf(">|%s|<\n", map.map[i]);
             free(map.map[i++]);
