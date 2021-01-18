@@ -11,16 +11,16 @@
 
 typedef struct	s_struct
 {
-	long int			res[2];
 	char		*no;
 	char		*so;
 	char		*we;
 	char		*ea;
 	char		*s;
+	char		**map;
+	long int	res[2];
 	long int    floor[3];
 	long int	ceiling[3];
-	char		**map;
-	int			map_size;
+	int			map_start;
 }				t_struct;
-void *ft_parser(char *file_name);
+t_struct ft_parser(char *file_name);
 #endif

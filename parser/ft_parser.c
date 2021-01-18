@@ -1,382 +1,301 @@
 #include "../cub3d.h"
 
-void set_to_def (t_struct *map)
+void struct_init(t_struct *map_struct)
 {
-    int i;
-    i = 0;
-    while (i < 2)
-        map->res[i++] = -1;
-    i = 0;
-    while (i < 3)
-    {
-        map->floor[i] = -1;
-        map->ceiling[i++] = -1;
-    }
-    map->map_size = -1;
-    map->no = NULL;
-    map->we = NULL;
-    map->ea = NULL;
-    map->so = NULL;
-    map->s = NULL;
-    map->map = NULL;
-}
-char **map_to_arr(char *file_name)
-{
-    char	*line;
-    char	**map;
-    int		fd;
-    int		amount;
-    int		i = 0;
-
-    amount = 1;
-    fd = open(file_name, O_RDONLY);
-    while (get_next_line(fd, &line) > 0)
-    {
-        amount++;
-        free(line);
-    }
-    free(line);
-    close(fd);
-    fd = open(file_name, O_RDONLY);
-    map = ft_calloc(amount + 1, sizeof(char*));
-    while(get_next_line(fd, &line))
-        map[i++] = line;
-    map[i++] = line;
-    map[i] = NULL;
-    return (map);
-    //TODO:error handling
-}
-int get_map_size(char **map)
-{
-    int i;
-
-    i = 0;
-    while (map[i] != NULL)
-    {
-        i++;
-    }
-    return (--i);
-}
-int free_td_array(char **arr, int ret_code)
-{
-    int i;
-
-    i = 0;
-    while (arr[i] != NULL)
-    {
-        free(arr[i++]);
-    }
-    free(arr[i]);
-    free(arr);
-    return (ret_code);
-}
-int check_map_line(char *line, int flag)
-{
-    char *str;
-    int i;
-
-    i = 0;
-    str = (!flag) ? " 1" : " 012NSWE";
-    while(line[i] != '\0')
-    {
-        if (!ft_strchr(str, *line))
-            return (0);
-        i++;
-    }
-    if (*line == '\0')
-        return (0);
-    return (1);
-}
-int get_map_start(char **map)
-{
-    int i;
-    int map_start;
-    i = 0;
-    while (map[i] != NULL)
-    {
-        if(!check_map_line(map[i], 0) || ft_strnstr(map[i], "1", ft_strlen(map[i])) == NULL)
-        {
-            i++;
-        }
-        else
-        {
-            map_start = i;
-            while(map[i] != NULL)
-            {
-                if (!check_map_line(map[i], 1))
-                    return (0);
-                i++;
-            }
-            return (map_start);
-        }
-    }
-    return (0);
-}
-int check_empty_line(char *line)
-{
-    if (*line != '\0')
-        return (0);
-    return (1);
-}
-int right_args_amount(char **array, int d)
-{
-    int i;
-
-    i = 0;
-    while (array[i] != NULL)
-        i++;
-    if (i != d)
-        return (0);
-    return (1);
-}
-int is_only_digits (char *line)
-{
-    int i;
-
-    i = 0;
-    while (line[i] != '\0')
-    {
-        if (ft_isdigit(line[i]) != 1)
-            return (0);
-        i++;
-    }
-    return (1);
-}
-int check_file_name (char *file_name)
-{
-    int i;
-
-    i = ft_strlen(file_name);
-    if (i < 5 || file_name[i - 1 ] != 'b' || file_name[i - 2] != 'u' || file_name[i - 3] != 'c' || file_name[i - 4] != '.')
-        return (0);
-    return (1);
-}
-void copy_map(t_struct *map_struct, char **map, int size, int start)
-{
-	int i;
+	size_t i;
 
 	i = 0;
-	map_struct->map = ft_calloc(sizeof(char*) * (size + 1), 1);
-	while (map[start] != NULL)
-	{
-		map_struct->map[i] = ft_strdup(map[start]);
-		start++;
-		i++;
-	}
-	map_struct->map[start] = NULL;
-}
-void free_map(char **map)
-{
-	int i;
-
-	i = 0;
-
-	while (map[i] != NULL)
-		free(map[i++]);
-	free(map[i]);
-	free(map);
-}
-int is_t(char *line)
-{
-	char *arr[5];
-	int i;
-
-	i = 0;
-	arr[0] = "NO";
-	arr[1] = "SO";
-	arr[2] = "WE";
-	arr[3] = "EA";
-	arr[4] = "S";
-	while (i < 5)
-	{
-		if (ft_strncmp(arr[i++], line, ft_strlen(line)) == 0)
-			return (1);
-	}
-	return (0);
-}
-
-
-int get_resolution(t_struct *map_struct, char *line)
-{
-    char **line_arr;
-    static int flag;
-
-    line_arr = ft_split(line, ' ');
-    if (ft_strncmp(line_arr[0], "R", ft_strlen(line_arr[0])) != 0 || flag != 0 || !right_args_amount(line_arr, 3))
-        return free_td_array(line_arr, 0);
-    flag++;
-    if (is_only_digits(line_arr[1]) && is_only_digits(line_arr[2])) {
-        map_struct->res[0] = ft_atoi(line_arr[1]);
-        map_struct->res[1] = ft_atoi(line_arr[2]);
-		return free_td_array(line_arr, 1);
-    }
-	return free_td_array(line_arr, 0);
-}
-int get_fc_colors(t_struct *map_struct, char *line)
-{
-    char **line_arr;
-    char **rgb_arr;
-    int i;
-    static int flags[2];
-
-    line_arr = ft_split(line, ' ');
-    if (!right_args_amount(line_arr, 2))
-        return free_td_array(line_arr, 0);
-    i = 0;
-    if (ft_strncmp(line_arr[0],"F", ft_strlen(line_arr[0])) == 0 && flags[0]++ == 0)
-    {
-    	printf("F fccolors\n");
-		rgb_arr = ft_split(line_arr[1], ',');
-        while(i < 3)
-        {
-            if(!is_only_digits(rgb_arr[i]))
-                return free_td_array(rgb_arr, 0) && free_td_array(line_arr, 0);
-            map_struct->floor[i] = ft_atoi(rgb_arr[i]);
-            i++;
-        }
-		return (free_td_array(rgb_arr, 1) && free_td_array(line_arr, 1));
-    }
-    else if (ft_strncmp(line_arr[0],"C", ft_strlen(line_arr[0])) == 0 && flags[1]++ == 0)
-    {
-		printf("C fccolors\n");
-		rgb_arr = ft_split(line_arr[1], ',');
-        while(i < 3)
-        {
-            if(!is_only_digits(rgb_arr[i]))
-                return free_td_array(rgb_arr, 0) && free_td_array(line_arr, 0);
-            map_struct->ceiling[i] = ft_atoi(rgb_arr[i]);
-            i++;
-        }
-		return (free_td_array(rgb_arr, 1) && free_td_array(line_arr, 1));
-    }
-    return (free_td_array(line_arr, 0));
-}
-int set_texture(char **var, char **line_arr)
-{
-	*var = ft_strdup(line_arr[1]);
-	return free_td_array(line_arr, 1);
-}
-int get_textures(t_struct *m_s, char *line)
-{
-    char **line_arr;
-    static int flags[5];
-
-    line_arr = ft_split(line, ' ');
-    if (!right_args_amount(line_arr, 2) || !is_t(line_arr[0]))
-        return free_td_array(line_arr, 0);
-    if (ft_strncmp("NO", line_arr[0], ft_strlen(line_arr[0])) == 0 && flags[0]++ == 0)
-		return set_texture(&m_s->no, line_arr);
-    else if (ft_strncmp("SO", line_arr[0], 2) == 0 && ft_strlen(line_arr[0]) == 2 && flags[1]++ == 0)
-		return set_texture(&m_s->so, line_arr);
-    else if (ft_strncmp("WE", line_arr[0], ft_strlen(line_arr[0])) == 0 && flags[2]++ == 0)
-		return set_texture(&m_s->we, line_arr);
-    else if (ft_strncmp("EA", line_arr[0], ft_strlen(line_arr[0])) == 0 && flags[3]++ == 0)
-		return set_texture(&m_s->ea, line_arr);
-    else if (ft_strncmp("S", line_arr[0], ft_strlen(line_arr[0])) == 0 && flags[4]++ == 0)
-		return set_texture(&m_s->s, line_arr);
-    return free_td_array(line_arr, 0);
-}
-
-int is_textures_valid(t_struct map_struct)
-{
-	if (open(map_struct.no, O_RDONLY) < 0
-	|| open(map_struct.so, O_RDONLY) < 0
-	|| open(map_struct.we, O_RDONLY) < 0
-	|| open(map_struct.ea, O_RDONLY) < 0
-	|| open(map_struct.s, O_RDONLY) < 0)
-		return (0);
-	return (1);
-}
-int is_fcr_valid(t_struct map_struct)
-{
-	int i;
+	while (i < 2)
+		map_struct->res[i++] = -1;
 
 	i = 0;
 	while (i < 3)
 	{
-		if (map_struct.floor[i] < 0 || map_struct.ceiling [i] < 0)
+		map_struct->floor[i] = -1;
+		map_struct->ceiling[i++] = -1;
+	}
+	map_struct->map_start = -1;
+	map_struct->no = NULL;
+	map_struct->we = NULL;
+	map_struct->ea = NULL;
+	map_struct->so = NULL;
+	map_struct->s = NULL;
+	map_struct->map = NULL;
+
+}
+int is_f_valid(char *file_name)
+{
+	int i;
+	int fd;
+
+	i = ft_strlen(file_name);
+	if (i < 5 || file_name[i - 1 ] != 'b' || file_name[i - 2] != 'u' || file_name[i - 3] != 'c' || file_name[i - 4] != '.')
+		return (0);
+	if ((fd = open(file_name, O_RDONLY)) < 0)
+		return (0);
+	else
+		close(fd);
+	return (1);
+}
+int file_to_array(char *file_name, t_struct *map_struct)
+{
+	int fd;
+	int i;
+	char c;
+	char *line;
+
+	i = 1;
+	fd = open(file_name, O_RDONLY);
+	while (read(fd, &c, 1))
+		i = (c == '\n') ? i + 1 : i;
+	map_struct->map = ft_calloc(i + 1, sizeof(char*));
+	i = 0;
+	close(fd);
+	fd = open(file_name, O_RDONLY);
+	while (get_next_line(fd, &line) > 0)
+		map_struct->map[i++] = line;
+	map_struct->map[i++] = line;
+	map_struct->map[i] = NULL;
+	return (1);
+}
+int is_only_digits (char *line)
+{
+	int i;
+
+	i = 0;
+	while (line[i] != '\0')
+	{
+		if (ft_isdigit(line[i]) != 1)
 			return (0);
 		i++;
 	}
-	if (map_struct.res[0] < 0 || map_struct.res[1] < 0)
-		return (0);
 	return (1);
 }
-
-//int check_map_borders(char **map)
-//{
-//
-//}
-//int is_map_valid (char **map)
-//{
-//	int i, k;
-//
-//	i = 0;
-//	while (map[i] != NULL)
-//	{
-//		k = 0;
-//		while (map[i][k])
-//		{
-//			if (i == 0 || i == get_map_size(map))
-//			{
-//				if (!(map[i][k] == ' ' || map[i][k] == '1'))
-//					return (0);
-//			}
-//			else
-//			{
-//
-//			}
-//			k++;
-//		}
-//		i++;
-//	}
-//	return (1);
-//}
-
-//int is_valid(t_struct map_struct)
-//{
-//	if (!is_fcr_valid(map_struct))
-//		return (0);
-//	if (!is_textures_valid(map_struct))
-//		return (0);
-//	if (!is_map_valid(map_struct.map))
-//		return (0);
-//	return (1);
-//}
-
-void *ft_parser(char *file_name)
+int get_first_line(char **map)
 {
-    t_struct *map_struct;
-    char **map;
-    int i;
-    int map_start;
+	int i;
+	int k;
 
-    i = 0;
-    if (!check_file_name(file_name))
-        return (NULL);
-    map_struct = malloc(sizeof(t_struct));
-    map = map_to_arr(file_name);
-    set_to_def(map_struct);
-    if ((map_start = get_map_start(map)) < 8)
+	i = 0;
+	while (map[i] != NULL)
+	{
+		k = 0;
+		while (map[i][k] != '\0')
+		{
+			if (!(map[i][k] == '1' || map[i][k] == ' '))
+				break;
+			else
+				k++;
+		}
+		if(map[i][k] == '\0' && ft_strchr(map[i], '1') != NULL)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+int get_map_start(char **map)
+{
+	int i;
+	int k;
+	char *s;
+	int start;
+
+	s = " 012NSWE";
+	start = get_first_line(map);
+	i = start;
+	while (map[i] != NULL)
+	{
+		k = 0;
+		while (map[i][k] != '\0')
+		{
+			if (ft_strchr(s, map[i][k]) == NULL)
+				return (-1);
+			k++;
+		}
+		i++;
+	}
+	return (start);
+}
+int n_of_lines(char **map)
+{
+	int i;
+
+	i = 0;
+	while (map != NULL && map[i] != NULL)
+	{
+		i++;
+	}
+	return (i);
+}
+int free_array(char **array, int code)
+{
+	int i;
+
+	i = 0;
+	if (array != NULL)
+	{
+		while(array[i] != NULL)
+		{
+			free(array[i++]);
+		}
+		free(array[i]);
+		free(array);
+	}
+	return (code);
+}
+
+int get_resolution (t_struct *map_struct, char *line)
+{
+	char **arr;
+	static int flag;
+
+	if (line != NULL && ft_strnstr(line, "R ", ft_strlen(line)) != 0 && flag == 0)
+	{
+		arr = ft_split(line, ' ');
+		if (arr != NULL && ft_strncmp(arr[0], "R", 1) == 0 && ft_strlen(arr[0]) == 1)
+		{
+			flag = 1;
+			if (n_of_lines(arr) == 3)
+			{
+				if (is_only_digits(arr[1]) && is_only_digits(arr[2]))
+				{
+					map_struct->res[0] = ft_atoi(arr[1]);
+					map_struct->res[1] = ft_atoi(arr[2]);
+					return free_array(arr, 1);
+				}
+			}
+		}
+		return free_array(arr, 0);
+	}
+	return (0);
+}
+int get_fc_colors (t_struct *map_struct, char *line)
+{
+	char **arr;
+	char **rgb_arr;
+	static int flag[2];
+
+	if (line != NULL && ft_strnstr(line, "F ", ft_strlen(line)) != 0 && flag[0] == 0)
+	{
+		arr = ft_split(line, ' ');
+		if (arr != NULL && ft_strncmp(arr[0], "F", 1) == 0 && ft_strlen(arr[0]) == 1)
+		{
+			flag[0] = 1;
+			if (n_of_lines(arr) == 2)
+			{
+				rgb_arr = ft_split(arr[1], ',');
+				if (n_of_lines(rgb_arr) == 3)
+				{
+					map_struct->floor[0] = ft_atoi(rgb_arr[0]);
+					map_struct->floor[1] = ft_atoi(rgb_arr[1]);
+					map_struct->floor[2] = ft_atoi(rgb_arr[2]);
+					free_array(rgb_arr, 1);
+					return free_array(arr, 1);
+				}
+			}
+		}
+	}
+	else if (line != NULL && ft_strnstr(line, "C ", ft_strlen(line)) != 0 && flag[1] == 0)
+	{
+		arr = ft_split(line, ' ');
+		if (arr != NULL && ft_strncmp(arr[0], "C", 1) == 0 && ft_strlen(arr[0]) == 1)
+		{
+			flag[1] = 1;
+			if (n_of_lines(arr) == 2)
+			{
+				rgb_arr = ft_split(arr[1], ',');
+				if (n_of_lines(rgb_arr) == 3)
+				{
+					map_struct->ceiling[0] = ft_atoi(rgb_arr[0]);
+					map_struct->ceiling[1] = ft_atoi(rgb_arr[1]);
+					map_struct->ceiling[2] = ft_atoi(rgb_arr[2]);
+					free_array(rgb_arr, 1);
+					return free_array(arr, 1);
+				}
+				free_array(rgb_arr, 0);
+			}
+		}
+		return free_array(arr, 0);
+	}
+	return (0);
+}
+int get_textures(t_struct *map_struct, char *line)
+{
+	char **arr;
+	static int flag[5];
+
+	if (line != NULL)
+	{
+		arr = ft_split(line, ' ');
+		if (n_of_lines(arr) == 2)
+		{
+			if(ft_strncmp(arr[0], "NO", 2) == 0 && ft_strlen(arr[0]) == 2 && flag[0] == 0)
+			{
+				flag[0] = 1;
+				map_struct->no = ft_strdup(arr[1]);
+				return free_array(arr, 1);
+			}
+			else if(ft_strncmp(arr[0], "SO", 2) == 0 && ft_strlen(arr[0]) == 2 && flag[1] == 0)
+			{
+				flag[1] = 1;
+				map_struct->so = ft_strdup(arr[1]);
+				return free_array(arr, 1);
+			}
+			else if(ft_strncmp(arr[0], "WE", 2) == 0 && ft_strlen(arr[0]) == 2 && flag[2] == 0)
+			{
+				flag[2] = 1;
+				map_struct->we = ft_strdup(arr[1]);
+				return free_array(arr, 1);
+			}
+			else if(ft_strncmp(arr[0], "EA", 2) == 0 && ft_strlen(arr[0]) == 2 && flag[3] == 0)
+			{
+				flag[3] = 1;
+				map_struct->ea = ft_strdup(arr[1]);
+				return free_array(arr, 1);
+			}
+			else if(ft_strncmp(arr[0], "S", 1) == 0 && ft_strlen(arr[0]) == 1 && flag[4] == 0)
+			{
+				flag[4] = 1;
+				map_struct->s = ft_strdup(arr[1]);
+				return free_array(arr, 1);
+			}
+		}
+		return free_array(arr, 0);
+	}
+	return (0);
+}
+int is_empty(char *line)
+{
+	if (*line == '\0')
+		return (1);
+	else
+		return (0);
+}
+
+t_struct ft_parser(char *file_name)
+{
+	t_struct	map_struct;
+	int			i;
+
+	struct_init(&map_struct);
+	if (!is_f_valid(file_name) || !file_to_array(file_name, &map_struct)
+		|| (map_struct.map_start = get_map_start(map_struct.map)) < 8)
 	{
 		write(2, "Map error\n", ft_strlen("Map error\n"));
 		exit(1);
 	}
-    map_struct->map_size = get_map_size(map) - map_start + 1;
-    copy_map(map_struct, map, map_struct->map_size, map_start);
-    while (i < map_start)
-    {
-        if (!(get_resolution(map_struct, map[i]) ||
-              get_textures(map_struct, map[i]) ||
-              get_fc_colors(map_struct, map[i]) ||
-              check_empty_line(map[i])))
+	i = 0;
+	while(i < map_struct.map_start)
+	{
+		if (!(get_resolution(&map_struct, map_struct.map[i])
+		|| get_fc_colors(&map_struct, map_struct.map[i])
+		|| get_textures(&map_struct, map_struct.map[i])
+		|| is_empty(map_struct.map[i])))
 		{
-        	write(2, "Map error\n", ft_strlen("Map error\n"));
-        	exit(1);
+			write(2, "Map error\n", ft_strlen("Map error\n"));
+			exit(1);
 		}
-        i++;
-    }
-    free_map(map);
-    return map_struct;
-    //TODO:error handling
+		i++;
+	}
+	return (map_struct);
 }
