@@ -98,7 +98,6 @@ int is_res_valid(t_struct *map_struct)
 	}
 	return (1);
 }
-
 int is_map_valid(char **map)
 {
 	int i, k;
@@ -120,28 +119,32 @@ int is_map_valid(char **map)
 			}
 			else
 			{
-				if (map[i][k] == '0')
+				if (map[i][k] == '0' || ft_strchr(str, map[i][k]) != NULL)
 				{
 					if (check_zero(k, map[i - 1], map[i], map[i + 1]) == 0)
 						return (0);
+					if (ft_strchr(str, map[i][k]) != NULL)
+					{
+						if (flag == 0)
+							flag++;
+						else
+							return (0);
+					}
 				}
-				else if (ft_strchr(str, map[i][k]) != NULL)
-				{
-					if (flag == 0)
-						flag++;
-					else
-						return (0);
-				}
+
 			}
 			k++;
 		}
 		i++;
 	}
+	if (flag == 0)
+		return (0);
 	return (1);
 }
 
 int map_validation(t_struct *map_struct)
 {
+	//TODO: валидация игрока
 	if (is_textures_valid(map_struct) == 0
 	|| is_colors_valid(map_struct) == 0
 	|| is_res_valid(map_struct) == 0

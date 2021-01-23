@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 SRCS	=	main.c ./parser/ft_parser.c ./gnl/get_next_line.c \
-			./gnl/get_next_line_utils.c \
+			./gnl/get_next_line_utils.c ./raycaster/raycaster.c \
 			 ./map_validation/ft_validation.c
 NAME    =   cub3d.out
 HEAD	=	cub3d.h
@@ -21,19 +21,23 @@ GCC     =   gcc -Wall -Wextra -Werror -g
 RM      =   rm -f
 C       =   -c
 O       =   -o
-
+#-Lmlx -lmlx -framework OpenGL -framework AppKit -lm
 .PHONY:		all clean fclean re
 
 .c.o:
 			$(GCC) $(C) $< $(O) $(<:.c=.o)
 all:		$(NAME)
 
-$(NAME):    $(OBJS) $(HEAD)
+$(NAME):    $(OBJS) $(HEAD) $(MLX)
 			make -C ./libft
-			$(GCC) $(OBJS) ./libft/libft.a -o $(NAME)
+			make -C ./mlx
+			cp ./mlx/libmlx.dylib .
+			$(GCC) $(OBJS) ./libft/libft.a libmlx.dylib -o $(NAME)
+
 clean:
 			$(RM) $(OBJS)
 			make clean -C ./libft
+			make clean -C ./mlx
 
 fclean:		clean
 			$(RM) $(NAME)

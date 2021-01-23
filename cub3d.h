@@ -8,7 +8,7 @@
 # include "libft/libft.h"
 # include "gnl/get_next_line.h"
 # include <stdio.h>
-
+# include "mlx/mlx.h"
 typedef struct	s_struct
 {
 	char		*no;
@@ -21,7 +21,12 @@ typedef struct	s_struct
 	long int    floor[3];
 	long int	ceiling[3];
 	int			map_start;
+	int			map_length;
+	int 		map_height;
 }				t_struct;
+
+
 t_struct		ft_parser(char *file_name);
 int				map_validation(t_struct *map_struct);
+void 			raycaster(t_struct *p_struct);
 #endif

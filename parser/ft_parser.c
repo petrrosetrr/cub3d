@@ -272,7 +272,24 @@ int is_empty(char *line)
 	else
 		return (0);
 }
+void set_map_size(t_struct *map_struct)
+{
+	int i;
+	int max;
+	int map_height;
 
+	map_height = 0;
+	max = 0;
+	i = map_struct->map_start;
+	while(map_struct->map[i])
+	{
+		max = ((int)ft_strlen(map_struct->map[i]) > max) ? (int)ft_strlen(map_struct->map[i]) : max;
+		i++;
+		map_height++;
+	}
+	map_struct->map_height = map_height;
+	map_struct->map_length = max;
+}
 t_struct ft_parser(char *file_name)
 {
 	t_struct	map_struct;
@@ -298,5 +315,6 @@ t_struct ft_parser(char *file_name)
 		}
 		i++;
 	}
+	set_map_size(&map_struct);
 	return (map_struct);
 }

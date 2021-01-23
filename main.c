@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
         if (map_validation(&map) == 1)
 		{
         	printf("vAlId map\n");
+			raycaster(&map);
 		}
         i = map.map_start;
         while(map.map[i] != NULL) {
