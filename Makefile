@@ -17,7 +17,7 @@ NAME    =   cub3d.out
 HEAD	=	cub3d.h
 LIBFT	=	./libft/libft.a
 OBJS    =   $(SRCS:.c=.o)
-GCC     =   gcc -Wall -Wextra -Werror -g
+GCC     =   gcc -Wall -Wextra -g #-Werror
 RM      =   rm -f
 C       =   -c
 O       =   -o
