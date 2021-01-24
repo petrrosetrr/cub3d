@@ -84,26 +84,63 @@ void			draw_map(t_vars *vars)
 }
 double			get_wall_dist(t_vars *vars, double angle)
 {
-	double dx;
-	double dy;
+	double dx1, dy1;
+	double dx2, dy2;
 	char **map = &vars->p_struct.map[vars->p_struct.map_start];
 
-		//	x walls
+		// walls > 0 && walls < 90
 	if ((angle > 0 && angle < PI / 2.0) || (angle < -270. * DR && angle > - 2.0 * PI) )
 	{
-		int test = ceil(vars->player.y);
-		dy = ceil(vars->player.y) - vars->player.y;
-		dx = dy / tan(angle) + 0.0001;
-		while (map[(int)(vars->player.y + dy)] != NULL && ft_strlen(map[(int)(vars->player.y + dy)]) > (int)(dx + vars->player.x) && map[
-				(int)(vars->player.y + dy)][
-				(int)(dx + vars->player.x)] != '1')
+		// +x +y
+//		int test = ceil(vars->player.y);
+		dy1 = ceil(vars->player.y) - vars->player.y;
+		dx1 = dy1 / tan(angle) + 0.0001;
+		while (map[(int)(vars->player.y + dy1)] != NULL &&
+		ft_strlen(map[(int)(vars->player.y + dy1)]) > (int)(dx1 + vars->player.x)
+		&& map[(int)(vars->player.y + dy1)][(int)(dx1 + vars->player.x)] != '1')
 		{
-			dy++;
+			dy1++;
 			if (tan(angle) != 0)
-				dx += 1/tan(angle);
+				dx1 += 1/tan(angle);
 		}
-		return (sqrt(pow(dy, 2) + pow(dx, 2)));
+		dx2 = ceil(vars->player.x) - vars->player.x;
+		dy2 = tan(vars->player.angle) * dx2 + 0.0001;
+		while(map[(int)(vars->player.y + dy2)] != NULL &&
+		ft_strlen(map[(int)(vars->player.y + dy2)]) > (int)(dx2 + vars->player.x) &&
+		map[(int)(vars->player.y + dy2)][(int)(dx2 + vars->player.x)] != '1')
+		{
+			dx2++;
+			dy2 += tan(vars->player.angle);
+		}
+		return ((sqrt(pow(dy1, 2) + pow(dx1, 2)) < sqrt(pow(dy2, 2) + pow(dx2, 2))) ? sqrt(pow(dy1, 2) + pow(dx1, 2)) : sqrt(pow(dy2, 2)
+		+ pow(dx2, 2)));
 	}
+//	else if ((angle < PI && angle > PI / 2.0) || (angle < -PI && angle > -1.5 * PI) )
+//	{
+//		// -x +y
+////		int test = ceil(vars->player.y);
+//		dy1 = ceil(vars->player.y) - vars->player.y;
+//		dx1 = -dy1 / tan(angle) + 0.0001;
+//		while (map[(int)(vars->player.y + dy1)] != NULL &&
+//			   (int)(vars->player.x - dx1) >= 0
+//			   && map[(int)(vars->player.y + dy1)][(int)(vars->player.x - dx1)] != '1')
+//		{
+//			dy1++;
+//			if (tan(angle) != 0)
+//				dx1 -= 1/tan(angle);
+//		}
+//		dx2 = vars->player.x - floor(vars->player.x);
+//		dy2 = -tan(vars->player.angle) * dx2 + 0.0001;
+//		while(map[(int)(vars->player.y + dy2)] != NULL &&
+//				(int)(vars->player.x - dx1) >= 0 &&
+//			  map[(int)(vars->player.y + dy2)][(int)(dx2 + vars->player.x)] != '1')
+//		{
+//			dx2--;
+//			dy2 += tan(vars->player.angle);
+//		}
+//		return ((sqrt(pow(dy1, 2) + pow(fabs(dx1), 2)) < sqrt(pow(dy2, 2) + pow(fabs(dx2), 2))) ?
+//		sqrt(pow(dy1, 2) + pow(fabs(dx1), 2)) : sqrt(pow(dy2, 2)+ pow(fabs(dx2), 2)));
+//	}
 	else
 		return (-1);
 }
@@ -228,7 +265,7 @@ void 			set_player (t_vars     *vars)
 	vars->player.flag_x = 0;
 	vars->player.flag_y = 0;
 	vars->player.flag_angle = 0;
-	vars->player.angle = 10.62*DR;
+	vars->player.angle = 87.14*DR;
 	i = vars->p_struct.map_start;
 	str = "NSEW";
 	while(vars->p_struct.map[i] != NULL)
