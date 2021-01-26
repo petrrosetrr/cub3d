@@ -9,6 +9,8 @@
 # include "gnl/get_next_line.h"
 # include <stdio.h>
 # include "mlx/mlx.h"
+# include <limits.h>
+# include <float.h>
 typedef struct	s_struct
 {
 	char		*no;

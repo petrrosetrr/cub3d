@@ -21,6 +21,8 @@ GCC     =   gcc -Wall -Wextra -g #-Werror
 RM      =   rm -f
 C       =   -c
 O       =   -o
+INC    	= ./raycaster/raycaster.h
+
 #-Lmlx -lmlx -framework OpenGL -framework AppKit -lm
 .PHONY:		all clean fclean re
 
