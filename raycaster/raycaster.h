@@ -10,6 +10,7 @@
 # define Q_KEY 12
 # define PI 3.1415926535
 # define DR 0.0174533
+# define START_ANGLE 255
 typedef struct  s_image {
 	void        *img_ptr;
 	char        *addr;

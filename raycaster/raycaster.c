@@ -82,68 +82,198 @@ void			draw_map(t_vars *vars)
 		y++;
 	}
 }
-double			get_wall_dist(t_vars *vars, double angle)
-{
-	double dx1, dy1;
-	double dx2, dy2;
-	char **map = &vars->p_struct.map[vars->p_struct.map_start];
-
-		// walls > 0 && walls < 90
-	if ((angle > 0 && angle < PI / 2.0) || (angle < -270. * DR && angle > - 2.0 * PI) )
-	{
-		// +x +y
-//		int test = ceil(vars->player.y);
-		dy1 = ceil(vars->player.y) - vars->player.y;
-		dx1 = dy1 / tan(angle) + 0.0001;
-		while (map[(int)(vars->player.y + dy1)] != NULL &&
-		ft_strlen(map[(int)(vars->player.y + dy1)]) > (int)(dx1 + vars->player.x)
-		&& map[(int)(vars->player.y + dy1)][(int)(dx1 + vars->player.x)] != '1')
-		{
-			dy1++;
-			if (tan(angle) != 0)
-				dx1 += 1/tan(angle);
-		}
-		dx2 = ceil(vars->player.x) - vars->player.x;
-		dy2 = tan(vars->player.angle) * dx2 + 0.0001;
-		while(map[(int)(vars->player.y + dy2)] != NULL &&
-		ft_strlen(map[(int)(vars->player.y + dy2)]) > (int)(dx2 + vars->player.x) &&
-		map[(int)(vars->player.y + dy2)][(int)(dx2 + vars->player.x)] != '1')
-		{
-			dx2++;
-			dy2 += tan(vars->player.angle);
-		}
-		return ((sqrt(pow(dy1, 2) + pow(dx1, 2)) < sqrt(pow(dy2, 2) + pow(dx2, 2))) ? sqrt(pow(dy1, 2) + pow(dx1, 2)) : sqrt(pow(dy2, 2)
-		+ pow(dx2, 2)));
-	}
+//double			get_wall_dist(t_vars *vars, double angle)
+//{
+//	double dx1, dy1;
+//	double dx2, dy2;
+//	int flag[2];
+//	char **map = &vars->p_struct.map[vars->p_struct.map_start];
+//	if ((angle > 0 && angle < PI / 2.0) || (angle < -270. * DR && angle > - 2.0 * PI) )
+//	{
+//		// +x +y
+//		dy1 = ceil(vars->player.y) - vars->player.y;
+//		dx1 = dy1 / tan(angle) + 0.0001;
+//		while (vars->p_struct.map_height > (int)(vars->player.y + dy1) &&
+//		ft_strlen(map[(int)(vars->player.y + dy1)]) > (int)(dx1 + vars->player.x)
+//		&& map[(int)(vars->player.y + dy1)][(int)(dx1 + vars->player.x)] != '1')
+//		{
+//			dy1++;
+//			dx1 += 1/tan(angle);
+//		}
+//		dx2 = ceil(vars->player.x) - vars->player.x;
+//		dy2 = tan(vars->player.angle) * dx2 + 0.0001;
+//		while(vars->p_struct.map_height > (int)(vars->player.y + dy2) &&
+//		ft_strlen(map[(int)(vars->player.y + dy2)]) > (int)(dx2 + vars->player.x) &&
+//		map[(int)(vars->player.y + dy2)][(int)(dx2 + vars->player.x)] != '1')
+//		{
+//			dx2++;
+//			dy2 += tan(vars->player.angle);
+//		}
+//		return ((sqrt(pow(dy1, 2) + pow(dx1, 2)) < sqrt(pow(dy2, 2) + pow(dx2, 2))) ?
+//		sqrt(pow(dy1, 2) + pow(dx1, 2)) : sqrt(pow(dy2, 2)+ pow(dx2, 2)));
+//	}
 //	else if ((angle < PI && angle > PI / 2.0) || (angle < -PI && angle > -1.5 * PI) )
 //	{
 //		// -x +y
-////		int test = ceil(vars->player.y);
 //		dy1 = ceil(vars->player.y) - vars->player.y;
-//		dx1 = -dy1 / tan(angle) + 0.0001;
-//		while (map[(int)(vars->player.y + dy1)] != NULL &&
-//			   (int)(vars->player.x - dx1) >= 0
-//			   && map[(int)(vars->player.y + dy1)][(int)(vars->player.x - dx1)] != '1')
+//		dx1 = dy1 / tan(angle) - 0.0001;
+//		while (vars->p_struct.map_height > (int)(vars->player.y + dy1) &&
+//			   (int)(vars->player.x - dx1 + flag[0]) >= 0
+//			   && map[(int)(vars->player.y + dy1)][(int)(vars->player.x + dx1 + flag[0])] != '1')
 //		{
+//			flag[0] = 0;
 //			dy1++;
-//			if (tan(angle) != 0)
-//				dx1 -= 1/tan(angle);
+//			dx1 += 1/tan(angle);
 //		}
-//		dx2 = vars->player.x - floor(vars->player.x);
-//		dy2 = -tan(vars->player.angle) * dx2 + 0.0001;
-//		while(map[(int)(vars->player.y + dy2)] != NULL &&
-//				(int)(vars->player.x - dx1) >= 0 &&
-//			  map[(int)(vars->player.y + dy2)][(int)(dx2 + vars->player.x)] != '1')
+//		dx2 = vars->player.x - ceil(vars->player.x);
+//		dy2 = tan(vars->player.angle) * dx2 + 0.0001;
+//		while(vars->p_struct.map_height > (int)(vars->player.y + dy2)&&
+//				(int)(vars->player.x + dx2 + flag[1]) >= 0 &&
+//			  map[(int)(vars->player.y + dy2)][(int)(vars->player.x + dx2) + flag[1]] != '1')
 //		{
+//			flag[1] = 0;
 //			dx2--;
-//			dy2 += tan(vars->player.angle);
+//			dy2 += -tan(vars->player.angle);
 //		}
 //		return ((sqrt(pow(dy1, 2) + pow(fabs(dx1), 2)) < sqrt(pow(dy2, 2) + pow(fabs(dx2), 2))) ?
 //		sqrt(pow(dy1, 2) + pow(fabs(dx1), 2)) : sqrt(pow(dy2, 2)+ pow(fabs(dx2), 2)));
 //	}
-	else
-		return (-1);
+//	else
+//		return (-1);
+//}
+double			get_horizontal_intersection(t_vars *vars, double angle, char **map)
+{
+	double dx, dy;
+
+	dx = DBL_MAX;
+	dy = DBL_MAX;
+	if (angle == 90 * DR || angle == -270 * DR)
+	{
+		dy = ceil(vars->player.y) - vars->player.y + 0.0001;
+		dx = 0;
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+			  && (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+			  && map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dy++;
+		}
+	}
+	else if (angle == -90 * DR || angle == 270 * DR)
+	{
+		dy = floor(vars->player.y) - vars->player.y - 0.0001;
+		dx = 0;
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+			  && (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+			  && map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dy--;
+		}
+	}
+	else if (angle == 0 * DR || angle == 360 * DR || angle == 180 * DR || angle == -180 * DR || angle == -360 * DR)
+	{
+		dx = DBL_MAX;
+		dy = DBL_MAX;
+	}
+	else if ((angle > 0 &&  angle < 180 * DR ) || (angle < -180 * DR && angle > -360 * DR))
+	{
+		dy = ceil(vars->player.y) - vars->player.y + 0.0001;
+		dx = dy / tan(angle);
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+		&& (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+		&& map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dy++;
+			dx+= 1.0 / tan(angle);
+		}
+	}
+	else if ((angle < 0 &&  angle > -180 * DR ) || (angle > 180 * DR && angle < 360 * DR))
+	{
+		//TODO: 3 четверть
+		dy = floor(vars->player.y) - vars->player.y - 0.0001;
+		dx = dy / tan(angle);
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+			  && (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+			  && map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dy--;
+			dx+=  -1.0 / tan(angle);
+		}
+	}
+	return (sqrt(pow(dx, 2) + pow(dy, 2)));
 }
+double			get_vertical_intersection(t_vars *vars, double angle, char **map)
+{
+	double dx, dy;
+
+	dx = DBL_MAX;
+	dy = DBL_MAX;
+	if (angle == 90 * DR || angle == -270 * DR || angle == -90 * DR || angle == 270 * DR)
+	{
+		dx = DBL_MAX;
+		dy = DBL_MAX;
+	}
+	else if (angle == 0 * DR || angle == 360 * DR || angle == -360 * DR)
+	{
+		dx = ceil(vars->player.y) - vars->player.y + 0.0001;
+		dy = 0;
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+			  && (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+			  && map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dx++;
+		}
+	}
+	else if (angle == 180 * DR || angle == -180 * DR)
+	{
+		dx = floor(vars->player.y) - vars->player.y - 0.0001;
+		dy = 0;
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+			  && (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+			  && map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dx--;
+		}
+	}
+	else if ((angle < 90 * DR && angle > -90 * DR) || (angle < -270 * DR && angle > -360 * DR) || (angle > 270 * DR && angle < 360 * DR))
+	{
+		dx = ceil(vars->player.x) - vars->player.x + 0.0001;
+		dy = dx * tan(angle);
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+			  && (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+			  && map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dx++;
+			dy+= tan(angle);
+		}
+	}
+	else if ((angle > 90 * DR && angle < 270 * DR) || (angle < -90 * DR && angle > -270 * DR))
+	{
+		//TODO: 3 четверть
+		dx = floor(vars->player.x) - vars->player.x - 0.0001;
+		dy = dx * tan(angle);
+		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
+			  && (int)(vars->player.x + dx) >= 0 && (int)(vars->player.x + dx) < (int)ft_strlen(map[(int)(vars->player.y + dy)])
+			  && map[(int)(vars->player.y + dy)][(int)(vars->player.x + dx)] != '1')
+		{
+			dx--;
+			dy+= -tan(angle);
+		}
+	}
+	return (sqrt(pow(dx, 2) + pow(dy, 2)));
+}
+double			get_wall_dist(t_vars *vars, double angle)
+{
+	double h, v;
+	char **map;
+
+	map = &vars->p_struct.map[vars->p_struct.map_start];
+	h = get_horizontal_intersection(vars, angle, map);
+	v = get_vertical_intersection(vars, angle, map);
+	return (h < v) ? h : v;
+}
+
+
+
 
 
 void			my_draw_line(t_vars *vars, double angle)
@@ -193,12 +323,12 @@ void			draw_player(t_vars *vars)
 //			my_mlx_pixel_put(&(vars->img), x, y, 0xeec900);
 //		}
 //	}
-//	int k;
-//	k = -33;
-//	for(int i = 0; i < 66; i++)
-//	{
-//		my_draw_line(vars, vars->player.angle - (k++)*DR);
-//	}
+	int k;
+	k = -33;
+	for(int i = 0; i < 66; i++)
+	{
+		my_draw_line(vars, vars->player.angle - (k++)*DR);
+	}
 		my_draw_line(vars, vars->player.angle);
 
 }
@@ -265,7 +395,7 @@ void 			set_player (t_vars     *vars)
 	vars->player.flag_x = 0;
 	vars->player.flag_y = 0;
 	vars->player.flag_angle = 0;
-	vars->player.angle = 87.14*DR;
+	vars->player.angle = START_ANGLE*DR;
 	i = vars->p_struct.map_start;
 	str = "NSEW";
 	while(vars->p_struct.map[i] != NULL)
