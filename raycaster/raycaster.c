@@ -334,30 +334,47 @@ void			draw_player(t_vars *vars)
 }
 void			move_player(t_vars *vars)
 {
+	double	dx = 0, dy = 0;
+	char	**map;
+
+	map = &vars->p_struct.map[vars->p_struct.map_start];
 	if (vars->player.flag_x > 0)
 	{
-		vars->player.y += SPEED * sin(90*DR + vars->player.angle);
-		vars->player.x += SPEED * cos(90*DR + vars->player.angle);
+		dy = SPEED * sin(90*DR + vars->player.angle);
+		dx = SPEED * cos(90*DR + vars->player.angle);
 	}
 	if (vars->player.flag_y > 0)
 	{
-		vars->player.y -= SPEED * sin(vars->player.angle);
-		vars->player.x -= SPEED * cos(vars->player.angle);
+		dy = -SPEED * sin(vars->player.angle);
+		dx = -SPEED * cos(vars->player.angle);
 	}
 	if (vars->player.flag_x < 0)
 	{
-		vars->player.y -= SPEED * sin(90*DR + vars->player.angle);
-		vars->player.x -= SPEED * cos(90*DR + vars->player.angle);
+		dy = -SPEED * sin(90*DR + vars->player.angle);
+		dx = -SPEED * cos(90*DR + vars->player.angle);
 	}
 	if (vars->player.flag_y < 0)
 	{
-		vars->player.y += SPEED * sin(vars->player.angle);
-		vars->player.x += SPEED * cos(vars->player.angle);
+		dy = SPEED * sin(vars->player.angle);
+		dx = SPEED * cos(vars->player.angle);
+	}
+
+	if (map[(int)(vars->player.y)][(int)(vars->player.x + dx)] != '1' &&
+			map[(int)(vars->player.y)][(int)(vars->player.x + dx)] != '2')
+	{
+		vars->player.x += dx;
+
+	}
+	if (map[(int)(vars->player.y + dy)][(int)(vars->player.x)] != '1' &&
+		map[(int)(vars->player.y + dy)][(int)(vars->player.x)] != '2')
+	{
+		vars->player.y += dy;
+
 	}
 	if (vars->player.flag_angle > 0)
-		vars->player.angle += 0.05;
+		vars->player.angle += ANGLE_SPEED;
 	if (vars->player.flag_angle < 0)
-		vars->player.angle -= 0.05;
+		vars->player.angle -= ANGLE_SPEED;
 	if (vars->player.angle >= DR * 360)
 		vars->player.angle -= DR * 360;
 	if (vars->player.angle <= -360*DR)
@@ -386,6 +403,7 @@ void 			create_window (t_vars *vars)
 	vars->win = mlx_new_window(vars->mlx, vars->p_struct.res[0], vars->p_struct.res[1], "cub3d");
 	vars->pixel_size = ((vars->p_struct.res[0] / vars->p_struct.map_length) < (vars->p_struct.res[1] / vars->p_struct.map_height)) ?
 					   vars->p_struct.res[0] / vars->p_struct.map_length : vars->p_struct.res[1] / vars->p_struct.map_height;
+	printf("screen x y %d %d res %d %d\n\n",x, y, vars->p_struct.res[0], vars->p_struct.res[1]);
 }
 void 			set_player (t_vars     *vars)
 {

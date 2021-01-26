@@ -5,12 +5,13 @@
 # define S_KEY 1
 # define D_KEY 2
 # define ESC_KEY 53
-# define SPEED 0.2
+# define SPEED 0.1
 # define E_KEY 14
 # define Q_KEY 12
 # define PI 3.1415926535
 # define DR 0.0174533
 # define START_ANGLE 255
+# define ANGLE_SPEED 0.08
 typedef struct  s_image {
 	void        *img_ptr;
 	char        *addr;

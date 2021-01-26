@@ -31,6 +31,15 @@ void			my_draw_line(t_vars *vars, int X0, int Y0, int X1, int Y1)
 	}
 }
 
+void			move_player(t_vars *vars)
+{
+	double	dx, dy;
+	char	**map;
+
+	dx = SPEED * cos(vars->player.angle);
+	dy = SPEED * sin(vars->player.angle);
+}
+
 
 
 

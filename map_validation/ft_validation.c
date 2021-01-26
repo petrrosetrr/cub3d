@@ -67,6 +67,7 @@ int is_textures_valid(t_struct *map_struct)
 			close(fd[i]);
 		else
 			//TODO: исправть когда подвезут текстуры
+//			return (0);
 			return (1);
 		i++;
 	}
@@ -88,14 +89,8 @@ int is_colors_valid(t_struct *map_struct)
 }
 int is_res_valid(t_struct *map_struct)
 {
-	//TODO:Дописать проверку на разрешение экрана компьютера
 	if (map_struct->res[0] <= 0 || map_struct->res[1] <= 0)
 		return (0);
-	if (map_struct->res[0] > 1920 || map_struct->res[1] > 1080)
-	{
-		map_struct->res[0] = 1920;
-		map_struct->res[1] = 1080;
-	}
 	return (1);
 }
 int is_map_valid(char **map)
@@ -110,7 +105,9 @@ int is_map_valid(char **map)
 	while (map[i] != NULL)
 	{
 		k = 0;
-		while (map[i][k + 1] != '\0')
+		if (map[i + 1] == NULL && map[i][0] == '\0')
+			return (0);
+		while (map[i][k] != '\0')
 		{
 			if (i == 0 || map[i + 1] == NULL)
 			{
@@ -119,7 +116,7 @@ int is_map_valid(char **map)
 			}
 			else
 			{
-				if (map[i][k] == '0' || ft_strchr(str, map[i][k]) != NULL)
+				if (map[i][k] == '0' || ft_strchr(str, map[i][k]) != NULL || map[i][k] == '2')
 				{
 					if (check_zero(k, map[i - 1], map[i], map[i + 1]) == 0)
 						return (0);

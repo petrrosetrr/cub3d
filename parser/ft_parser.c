@@ -187,14 +187,19 @@ int get_fc_colors (t_struct *map_struct, char *line)
 				rgb_arr = ft_split(arr[1], ',');
 				if (n_of_lines(rgb_arr) == 3)
 				{
-					map_struct->floor[0] = ft_atoi(rgb_arr[0]);
-					map_struct->floor[1] = ft_atoi(rgb_arr[1]);
-					map_struct->floor[2] = ft_atoi(rgb_arr[2]);
-					free_array(rgb_arr, 1);
-					return free_array(arr, 1);
+					if (is_only_digits(rgb_arr[0]) && is_only_digits(rgb_arr[1]) && is_only_digits(rgb_arr[2]))
+					{
+						map_struct->floor[0] = ft_atoi(rgb_arr[0]);
+						map_struct->floor[1] = ft_atoi(rgb_arr[1]);
+						map_struct->floor[2] = ft_atoi(rgb_arr[2]);
+						free_array(rgb_arr, 1);
+						return free_array(arr, 1);
+					}
 				}
+				free_array(rgb_arr, 0);
 			}
 		}
+		return free_array(arr, 0);
 	}
 	else if (line != NULL && ft_strnstr(line, "C ", ft_strlen(line)) != 0 && flag[1] == 0)
 	{
@@ -207,11 +212,14 @@ int get_fc_colors (t_struct *map_struct, char *line)
 				rgb_arr = ft_split(arr[1], ',');
 				if (n_of_lines(rgb_arr) == 3)
 				{
-					map_struct->ceiling[0] = ft_atoi(rgb_arr[0]);
-					map_struct->ceiling[1] = ft_atoi(rgb_arr[1]);
-					map_struct->ceiling[2] = ft_atoi(rgb_arr[2]);
-					free_array(rgb_arr, 1);
-					return free_array(arr, 1);
+					if (is_only_digits(rgb_arr[0]) && is_only_digits(rgb_arr[1]) && is_only_digits(rgb_arr[2]))
+					{
+						map_struct->ceiling[0] = ft_atoi(rgb_arr[0]);
+						map_struct->ceiling[1] = ft_atoi(rgb_arr[1]);
+						map_struct->ceiling[2] = ft_atoi(rgb_arr[2]);
+						free_array(rgb_arr, 1);
+						return free_array(arr, 1);
+					}
 				}
 				free_array(rgb_arr, 0);
 			}
@@ -318,3 +326,4 @@ t_struct ft_parser(char *file_name)
 	set_map_size(&map_struct);
 	return (map_struct);
 }
+//TODO: переполнение интов в разрешении и цветах
