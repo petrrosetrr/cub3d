@@ -32,8 +32,8 @@ all:		$(NAME)
 
 $(NAME):    $(OBJS) $(HEAD) $(MLX)
 			make -C ./libft
-			make -C ./mlx
-			cp ./mlx/libmlx.dylib .
+#			make -C ./mlx
+#			cp ./mlx/libmlx.dylib .
 			$(GCC) $(OBJS) ./libft/libft.a libmlx.dylib -o $(NAME)
 
 clean:
