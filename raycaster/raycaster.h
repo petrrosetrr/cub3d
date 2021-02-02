@@ -10,10 +10,27 @@
 # define Q_KEY 12
 # define PI 3.1415926535
 # define DR 0.0174533
-# define START_ANGLE 359.9
-# define ANGLE_SPEED 0.1
-# define FOV	66
+# define START_ANGLE 90
+# define ANGLE_SPEED 0.05
+# define FOV 60
+# define RAY 1450
 
+typedef struct	s_w_intersection
+{
+	double		intersection;
+	double		wall_pos;
+	char		flag;
+}				s_w_intersection;
+typedef struct	s_texture
+{
+	void 		*img;
+	int			img_width;
+	int 		img_height;
+	int			bpp;
+	int			line_length;
+	int			endian;
+	char		*addr;
+}				t_texture;
 typedef struct  s_image {
 	void        *img_ptr;
 	char        *addr;
@@ -39,5 +56,9 @@ typedef struct  s_vars {
 	t_player	player;
 	t_struct	p_struct;
 	int 		pixel_size;
+	t_texture	no_tex;
+	t_texture	so_tex;
+	t_texture	we_tex;
+	t_texture	ea_tex;
 }               t_vars;
 #endif

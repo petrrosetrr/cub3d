@@ -8,6 +8,15 @@ void            my_mlx_pixel_put(t_image *image, int x, int y, int color)
 	dst = image->addr + (y * image->line_length + x * (image->bpp / 8));
 	*(unsigned int*)dst = color;
 }
+
+int				my_mlx_pixel_get(t_texture *texture, int x, int y)
+{
+	char    *dst;
+
+	dst = texture->addr + (y * texture->line_length + x * (texture->bpp / 8));
+	return  *(int*)dst;
+}
+
 int             exit_hook(int keycode, t_vars *vars)
 {
 	(void) keycode;
@@ -82,11 +91,29 @@ int				released_hook(int keycode, t_vars *vars)
 //		y++;
 //	}
 //}
+void	draw_texture (t_vars *vars, s_w_intersection *intersection, int x, int y, int wh)
+{
+	int i;
+	double k;
+	i = 0;
+	k = ((double) wh / (double)vars->so_tex.img_height);
+	while(i < wh)
+	{
+		my_mlx_pixel_put(&vars->img, x, y + i, my_mlx_pixel_get(&vars->we_tex, floor(i / k), floor(vars->we_tex.img_width * intersection->wall_pos)));
+		i++;
+	}
+	//TODO: масштабирование стены, стартовый y расчитывается в функции отрисовки текстур
+	printf("ray hit wall in: %.2f\n", intersection->wall_pos);
+}
 
-double			get_horizontal_intersection(t_vars *vars, double angle)
+
+
+
+s_w_intersection		get_horizontal_intersection(t_vars *vars, double angle)
 {
 	double dx, dy;
 	char **map;
+	s_w_intersection intersection;
 
 	map = &vars->p_struct.map[vars->p_struct.map_start];
 	dx = DBL_MAX;
@@ -143,12 +170,18 @@ double			get_horizontal_intersection(t_vars *vars, double angle)
 			dx+=  -1.0 / tan(angle);
 		}
 	}
-	return (sqrt(pow(dx, 2) + pow(dy, 2)));
+//	return (sqrt(pow(dx, 2) + pow(dy, 2)));
+
+	intersection.intersection = (sqrt(pow(dx, 2) + pow(dy, 2)));
+	intersection.wall_pos = ((dx) + (vars->player.x)) - floor((dx) + (vars->player.x));
+	intersection.flag = 'h';
+	return intersection;
 }
-double			get_vertical_intersection(t_vars *vars, double angle)
+s_w_intersection			get_vertical_intersection(t_vars *vars, double angle)
 {
 	double dx, dy;
 	char **map;
+	s_w_intersection intersection;
 
 	map = &vars->p_struct.map[vars->p_struct.map_start];
 	dx = DBL_MAX;
@@ -205,7 +238,12 @@ double			get_vertical_intersection(t_vars *vars, double angle)
 			dy+= -tan(angle);
 		}
 	}
-	return (sqrt(pow(dx, 2) + pow(dy, 2)));
+//	return (sqrt(pow(dx, 2) + pow(dy, 2)));
+	intersection.wall_pos = ((dy) + (vars->player.y)) - floor((dy) + (vars->player.y));
+	intersection.intersection = (sqrt(pow(dx, 2) + pow(dy, 2)));
+//	intersection.wall_pos = fabs(dy) - floor(fabs(dy));
+	intersection.flag = 'v';
+	return intersection;
 }
 //double			get_wall_dist(t_vars *vars, double angle)
 //{
@@ -246,6 +284,22 @@ double			get_vertical_intersection(t_vars *vars, double angle)
 //		// generation step by step
 //	}
 //}
+void 	load_textures(t_vars *vars)
+{
+	if((vars->no_tex.img = mlx_xpm_file_to_image(vars->mlx, vars->p_struct.no, &vars->no_tex.img_width, &vars->no_tex.img_height)) == NULL
+	|| (vars->so_tex.img = mlx_xpm_file_to_image(vars->mlx, vars->p_struct.so, &vars->so_tex.img_width, &vars->so_tex.img_height)) == NULL
+	|| (vars->we_tex.img = mlx_xpm_file_to_image(vars->mlx, vars->p_struct.we, &vars->we_tex.img_width, &vars->we_tex.img_height)) == NULL
+	|| (vars->ea_tex.img = mlx_xpm_file_to_image(vars->mlx, vars->p_struct.ea, &vars->ea_tex.img_width, &vars->ea_tex.img_height)) == NULL)
+	{
+		write(2, "errror", ft_strlen("errror"));
+		exit(1);
+	}
+	vars->no_tex.addr = mlx_get_data_addr(vars->no_tex.img, &vars->no_tex.bpp, &vars->no_tex.line_length, &vars->no_tex.endian);
+	vars->so_tex.addr = mlx_get_data_addr(vars->so_tex.img, &vars->so_tex.bpp, &vars->so_tex.line_length, &vars->so_tex.endian);
+	vars->we_tex.addr = mlx_get_data_addr(vars->we_tex.img, &vars->we_tex.bpp, &vars->we_tex.line_length, &vars->we_tex.endian);
+	vars->ea_tex.addr = mlx_get_data_addr(vars->ea_tex.img, &vars->ea_tex.bpp, &vars->ea_tex.line_length, &vars->ea_tex.endian);
+}
+
 
 void 	draw_line(t_vars *vars, double x0, double y0, double x1, double y1, unsigned int color)
 {
@@ -278,44 +332,31 @@ void 	draw_line(t_vars *vars, double x0, double y0, double x1, double y1, unsign
 
 void	draw_walls (t_vars *vars)
 {
-	double h, v, i;
+	s_w_intersection h, v;
+	double i;
 	double ray_step;
-	int x, y, k, ray_w;
+	int x, y, ray_w;
 	int wh;
 	double a;
 
 	ray_step = (double)FOV / (double)vars->p_struct.res[0];
 //	ray_step = 0.03;
-	ray_w = (int)((double)vars->p_struct.res[0] / ((double)FOV / ray_step));
-	if (ray_w <= 0)
-		ray_w = 1;
-
 	i = (double)FOV / -2;
 	x = 0;
 	while(i < (double)FOV*0.5)
 	{
 		a = vars->player.angle + i * DR;
-		if (a < -2 * PI)
-			a += 2 * PI;
-		if (a > 2 * PI)
-			a -= 2 * PI;
-		h = get_horizontal_intersection(vars, a) * 2;
-		v = get_vertical_intersection(vars, a) * 2;
-		k = 0;
-		wh = (int)(floor((double)vars->p_struct.res[1] / ((((h < v) ? h : v)) * cos(i * M_PI / 200))));
-		if (wh > vars->p_struct.res[1])
-			wh = vars->p_struct.res[1];
-		if(h == 0 || v == 0)
-			y = 0;
-		else
-			y = (int)(vars->p_struct.res[1] - wh) / 2;
-
-		while (k < ray_w)
-		{
-			draw_line(vars, x + k, y, x + k, y + wh - 1, (h < v) ? 0xf5f5f5 : 0xfaebd7);
-			k++;
-		}
-		x += k;
+		a = (a < -2 * PI) ? a + 2 * PI: a;
+		a = (a >  2 * PI) ? a - 2 * PI: a;
+		h = get_horizontal_intersection(vars, a);
+		v = get_vertical_intersection(vars, a);
+		wh = (int)(floor((double)vars->p_struct.res[1] / ((((h.intersection < v.intersection) ? h.intersection : v.intersection)) * cos(i * M_PI / 180))));
+//		wh = (wh > vars->p_struct.res[1]) ? vars->p_struct.res[1] : wh;
+//		y = (int)(vars->p_struct.res[1] - wh) / 2;
+//		draw_line(vars, x, y, x, y + wh - 1, (h.intersection < v.intersection) ? 0xf5f5f5 : 0xfaebd7);
+		draw_texture(vars, ((h.intersection < v.intersection) ? &h : &v), x, wh);
+		printf("px py wh %.4f %.4f %d\n", vars->player.x, vars->player.y, wh);
+		x ++;
 		i += ray_step;
 	}
 }
@@ -342,23 +383,23 @@ void			move_player(t_vars *vars)
 	map = &vars->p_struct.map[vars->p_struct.map_start];
 	if (vars->player.flag_x > 0)
 	{
-		dy = SPEED * sin(90*DR + vars->player.angle);
-		dx = SPEED * cos(90*DR + vars->player.angle);
+		dy += SPEED * sin(90*DR + vars->player.angle);
+		dx += SPEED * cos(90*DR + vars->player.angle);
 	}
 	if (vars->player.flag_y > 0)
 	{
-		dy = -SPEED * sin(vars->player.angle);
-		dx = -SPEED * cos(vars->player.angle);
+		dy += -SPEED * sin(vars->player.angle);
+		dx += -SPEED * cos(vars->player.angle);
 	}
 	if (vars->player.flag_x < 0)
 	{
-		dy = -SPEED * sin(90*DR + vars->player.angle);
-		dx = -SPEED * cos(90*DR + vars->player.angle);
+		dy += -SPEED * sin(90*DR + vars->player.angle);
+		dx += -SPEED * cos(90*DR + vars->player.angle);
 	}
 	if (vars->player.flag_y < 0)
 	{
-		dy = SPEED * sin(vars->player.angle);
-		dx = SPEED * cos(vars->player.angle);
+		dy += SPEED * sin(vars->player.angle);
+		dx += SPEED * cos(vars->player.angle);
 	}
 
 	if (map[(int)(vars->player.y)][(int)(vars->player.x + dx)] != '1' &&
@@ -391,7 +432,7 @@ int				redraw(t_vars *vars)
 	vars->img.addr = mlx_get_data_addr(vars->img.img_ptr, &vars->img.bpp, &vars->img.line_length, &vars->img.endian);
 	move_player(vars);
 	draw_walls(vars);
-	printf("p angle %.2f\n", vars->player.angle / DR);
+//	printf("p angle %.2f\n", vars->player.angle / DR);
 //	draw_map();
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img_ptr, 0, 0);
 	mlx_destroy_image(vars->mlx, vars->img.img_ptr);
@@ -404,7 +445,7 @@ void 			create_window (t_vars *vars)
 
 	mlx_get_screen_size(vars->mlx, &x, &y);
 	vars->p_struct.res[0] = (vars->p_struct.res[0] > x) ? x : vars->p_struct.res[0];
-	vars->p_struct.res[1] = (vars->p_struct.res[1] > y) ? x : vars->p_struct.res[1];
+	vars->p_struct.res[1] = (vars->p_struct.res[1] > y) ? y : vars->p_struct.res[1];
 	vars->win = mlx_new_window(vars->mlx, vars->p_struct.res[0], vars->p_struct.res[1], "cub3d");
 	vars->pixel_size = ((vars->p_struct.res[0] / vars->p_struct.map_length) < (vars->p_struct.res[1] / vars->p_struct.map_height)) ?
 					   vars->p_struct.res[0] / vars->p_struct.map_length : vars->p_struct.res[1] / vars->p_struct.map_height;
@@ -447,12 +488,14 @@ void 			raycaster(t_struct *p_struct)
 	vars.mlx = mlx_init();
 	create_window(&vars);
 	set_player(&vars);
-	vars.img.img_ptr = mlx_new_image(vars.mlx, vars.p_struct.res[0], vars.p_struct.res[1]);
-	vars.img.addr = mlx_get_data_addr(vars.img.img_ptr, &vars.img.bpp, &vars.img.line_length, &vars.img.endian);
+//	vars.img.img_ptr = mlx_new_image(vars.mlx, vars.p_struct.res[0], vars.p_struct.res[1]);
+//	vars.img.addr = mlx_get_data_addr(vars.img.img_ptr, &vars.img.bpp, &vars.img.line_length, &vars.img.endian);
+	load_textures(&vars);
+//	mlx_do_key_autorepeaton(vars.mlx);
 	mlx_hook(vars.win, 02, 0, pressed_hook, &vars);
 	mlx_hook(vars.win, 03, 0, released_hook, &vars);
 	mlx_hook(vars.win, 17, 0, exit_hook, &vars);
-	mlx_put_image_to_window(vars.mlx, vars.win, vars.img.img_ptr, 0, 0);
+//	mlx_put_image_to_window(vars.mlx, vars.win, vars.img.img_ptr, 0, 0);
 	mlx_loop_hook(vars.mlx, redraw, &vars);
 	mlx_loop(vars.mlx);
 }
