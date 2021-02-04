@@ -5,7 +5,7 @@
 # define S_KEY 1
 # define D_KEY 2
 # define ESC_KEY 53
-# define SPEED 0.05
+# define SPEED 0.1
 # define E_KEY 14
 # define Q_KEY 12
 # define PI 3.1415926535
@@ -21,6 +21,7 @@ typedef struct	s_w_intersection
 	double		wall_pos;
 	char		flag;
 }				s_w_intersection;
+
 typedef struct	s_texture
 {
 	void 		*img;

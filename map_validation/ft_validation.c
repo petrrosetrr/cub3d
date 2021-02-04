@@ -66,8 +66,6 @@ int is_textures_valid(t_struct *map_struct)
 		if (fd[i] > 0)
 			close(fd[i]);
 		else
-			//TODO: исправть когда подвезут текстуры
-//			return (0);
 			return (1);
 		i++;
 	}
