@@ -10,7 +10,7 @@
 # define Q_KEY 12
 # define PI 3.1415926535
 # define DR 0.0174533
-# define START_ANGLE (180)
+# define START_ANGLE (-20)
 # define ANGLE_SPEED 0.05
 # define FOV 60
 
@@ -19,7 +19,7 @@ typedef	struct	s_sprite
 	double		hit[2];
 	double		pos[2];
 	char		flag;
-	void		*next;
+	struct s_sprite	*next;
 }				t_sprite;
 
 typedef struct	s_wall

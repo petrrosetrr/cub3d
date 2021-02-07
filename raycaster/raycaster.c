@@ -137,6 +137,7 @@ void				draw_texture (t_vars *vars, t_wall *intersection, int x, int wh, double 
 void				add_sprite(t_wall *wall, t_vars *vars, double dx, double dy, char flag)
 {
 	t_sprite *tmp;
+
 	tmp = wall->sprite;
 	wall->sprite = malloc(sizeof(t_sprite));
 	wall->sprite->next = tmp;
@@ -203,7 +204,6 @@ t_wall				get_horizontal_intersection(t_vars *vars, double angle)
 	}
 	else if ((angle < 0 &&  angle > -180 * DR ) || (angle > 180 * DR && angle < 360 * DR))
 	{
-		//TODO: 3 четверть
 		dy = floor(vars->player.y) - vars->player.y - 0.0001;
 		dx = dy / tan(angle);
 		while(vars->p_struct.map_height > (int)(vars->player.y + dy) && vars->player.y + dy >= 0
@@ -216,8 +216,6 @@ t_wall				get_horizontal_intersection(t_vars *vars, double angle)
 			dx+=  -1.0 / tan(angle);
 		}
 	}
-//	return (sqrt(pow(dx, 2) + pow(dy, 2)));
-
 	intersection.distance = (sqrt(pow(dx, 2) + pow(dy, 2)));
 	intersection.wall_pos = ((dx) + (vars->player.x)) - floor((dx) + (vars->player.x));
 	intersection.flag = 'h';
@@ -296,7 +294,6 @@ t_wall				get_vertical_intersection(t_vars *vars, double angle)
 //	return (sqrt(pow(dx, 2) + pow(dy, 2)));
 	intersection.wall_pos = ((dy) + (vars->player.y)) - floor((dy) + (vars->player.y));
 	intersection.distance = (sqrt(pow(dx, 2) + pow(dy, 2)));
-//	distance.wall_pos = fabs(dy) - floor(fabs(dy));
 	intersection.flag = 'v';
 	return intersection;
 }
@@ -403,56 +400,65 @@ void 				draw_line(t_vars *vars, double x0, double y0, double x1, double y1, uns
 }
 void 				draw_sprite(t_vars *vars, t_wall h, t_wall v, int x, double a)
 {
-//	t_sprite *sprite;
-//
-//	sprite = NULL;
-//	if (h.sprite != NULL)
-//			sprite = h.sprite;
-//	if (v.sprite != NULL)
-//	{
-//		if (sprite == NULL || sprite->distance > v.sprite->distance)
-//			sprite = v.sprite;
-//	}
-//	//расстояние до спрайта = расстоянию до центра спрайта тк спрайт всегда под 90 с игроком
-//	if (sprite != NULL)
-//	{
-//		double distnace = sqrt(pow(sprite->pos[0], 2) + pow(sprite->pos[1], 2)) * cos(ii * M_PI / 180);
-//		double angle_center = atan(sprite->pos[1] / sprite->pos[0]);
-//		double sprite_pos = sin(fabs(a - angle_center)) * distnace;
-//		printf("dis: %.3f center angle: %.3f ray angle %.3f sprite_pos %.3f \n", distnace, angle_center / DR, a / DR, sprite_pos);
-//	}
-
-
 	t_sprite *sprite;
 	int i;
 	int y;
 	int wh;
 	double k;
-	int offset = 0;
-	sprite =  NULL;
-	double hit_dist;
+	int offset;
+	double distnace;
+	double center_angle;
+	double ray_angle;
+	double sprite_pos;
 
+	offset = 0;
+//	if (x == 495)
+//	{
+//		int a;
+//
+//		a = 100;
+//		while (a++ < vars->p_struct.res[1] - 1)
+//			my_mlx_pixel_put(&vars->img, x, a, 0x0);
+//		x = 495;
+//	}
 	while(h.sprite != NULL || v.sprite != NULL)
 	{
-		i = 0;
-		if (h.sprite != NULL)
+		if (h.sprite == NULL)
 		{
-			hit_dist = sqrt(pow(h.sprite->hit[0], 2) + pow(h.sprite->hit[1], 2));
-			sprite = h.sprite;
-		}
-		if (v.sprite != NULL)
-		{
-			hit_dist = (sqrt(pow(v.sprite->hit[0], 2) + pow(v.sprite->hit[1], 2)) < hit_dist) ? sqrt(pow(v.sprite->hit[0], 2) + pow(v.sprite->hit[1], 2)) : hit_dist;
 			sprite = v.sprite;
+			v.sprite = v.sprite->next;
 		}
-		double distnace = sqrt(pow(sprite->pos[0], 2) + pow(sprite->pos[1], 2));
-		double center_angle = atan(sprite->pos[1] / sprite->pos[0]);
-		double ray_angle = atan(sprite->hit[1] / sprite->hit[0]);
-		double sprite_pos = sin(fabs(ray_angle - center_angle)) * distnace;
+		else if (v.sprite == NULL)
+		{
+			sprite = h.sprite;
+			h.sprite = h.sprite->next;
+		}
+		else
+		{
+			if(sqrt(pow(h.sprite->pos[0], 2) + pow(h.sprite->pos[1], 2)) > sqrt(pow(v.sprite->pos[0], 2) + pow(v.sprite->pos[1], 2)))
+			{
+				sprite = h.sprite;
+				h.sprite = h.sprite->next;
+			}
+			else
+			{
+				sprite = v.sprite;
+				v.sprite = v.sprite->next;
+			}
+		}
+		distnace = sqrt(pow(sprite->pos[0], 2) + pow(sprite->pos[1], 2));
+//		if (((distnace >= 7 && distnace <= 8) || (distnace >= 2.23 && distnace <= 2.5)) && a >= -20 * DR && a <= -19 * DR)
+//			printf("dist: %.3f angle: %.3f\n", distnace, a / DR);
+		if (h.distance < distnace || v.distance < distnace)
+			continue;
+		center_angle = atan(sprite->pos[1] / sprite->pos[0]);
+		ray_angle = atan(sprite->hit[1] / sprite->hit[0]);
+		sprite_pos = sin(fabs(ray_angle - center_angle)) * distnace;
 		if (sprite->pos[0] == 0)
 			center_angle = 0;
 		if (sprite->hit[0] == 0)
 			ray_angle = 0;
+
 		if (ray_angle > center_angle)
 			sprite_pos = -sprite_pos;
 		wh = (int)(floor((double)vars->p_struct.res[1] / distnace));
@@ -462,36 +468,37 @@ void 				draw_sprite(t_vars *vars, t_wall h, t_wall v, int x, double a)
 			wh = (int)vars->p_struct.res[1];
 		}
 		y = (vars->p_struct.res[1] - wh) / 2 + wh * 0.5;
-		k = wh * 0.5 / vars->s_tex.img_height;
-//		printf("distance: %.2f spr_pos %.2f ray_angle %.2f center_angle %.2f sprite->pos[0] %.2f sprite->pos[1] %.2f angle: %.2f flag %c\n", distnace, sprite_pos, ray_angle / DR, center_angle / DR, sprite->pos[0], sprite->pos[1], a / DR,
+		k = (wh * 0.5 + offset)/ vars->s_tex.img_height;
+		printf("angle %.2f\n", a / DR);
+//		if (h.sprite != NULL && h.sprite->next == NULL && sprite->flag == 'h')
+//			printf("distance: %f spr_pos %.2f ray_angle %.2f center_angle %.2f sprite->pos[0] %.2f sprite->pos[1] %.2f angle: %.2f flag %c\n", distnace, sprite_pos, ray_angle / DR, center_angle / DR, sprite->pos[0], sprite->pos[1], a / DR,
 //		 sprite->flag);
-//		if(center_angle < 0)
-//			printf("center angle: %.2f pos x y %.2f %.2f\n", center_angle /DR, sprite->pos[0], sprite->pos[1]);
-//		printf("sprite pos: %.2f center %.2f ray %.2f dist %.2f\n", sprite_pos, center_angle / DR, ray_angle / DR, distnace);
-//		if ((sprite->hit[1] < sprite->pos[1] && ((a >= 0 && a <= 90 * DR) || (a <= -270 * DR && a >= -360 * DR)) && sprite->flag == 'v')
-//		|| (sprite->hit[0] < sprite->pos[0]  && sprite->flag == 'h' && ((a >= 0 && a <= 90 * DR) || (a <= -270 * DR && a >= -360 * DR))))
-//			sprite_pos = -sprite_pos;
-//		if ((sprite->hit[1] < sprite->pos[1] && ((a > 90 && a <= 180 * DR) || (a <= -180 * DR && a > -270 * DR)) && sprite->flag == 'v')
-//		|| (sprite->hit[0] > sprite->pos[0]  && sprite->flag == 'h' && ((a > 90 && a <= 180 * DR) || (a <= -180 * DR && a > -270 * DR))))
-//			sprite_pos = -sprite_pos;
-//		if ((sprite->hit[1] < sprite->pos[1] && ((a > 180 && a <= 270 * DR) || (a <= -90 * DR && a > -180 * DR)) && sprite->flag == 'v')
-//			|| (sprite->hit[0] < sprite->pos[0]  && sprite->flag == 'h' && ((a > 180 && a <= 270 * DR) || (a <= -90 * DR && a > -180 * DR))))
-//			sprite_pos = -sprite_pos;
-//		if ((sprite->hit[1] > sprite->pos[1] && ((a > 270 && a <= 360 * DR) || (a <= 0 * DR && a > -90 * DR)) && sprite->flag == 'v')
-//			|| (sprite->hit[0] > sprite->pos[0]  && sprite->flag == 'h' && ((a > 270 && a <= 360 * DR) || (a <= 0 * DR && a > -90 * DR))))
-//			sprite_pos = -sprite_pos;
-		while (i < wh / 2)
+		i = 0;
+		if (sprite_pos >= -0.5 && sprite_pos <= 0.5)
 		{
-			if (sprite_pos >= -0.5 && sprite_pos <= 0.5)
+			while (i < wh / 2)
 			{
-				my_mlx_pixel_put(&vars->img, x, y + i, my_mlx_pixel_get(&vars->s_tex, floor(vars->s_tex.img_width * (0.5 + sprite_pos)), floor((double) (i) / k)));
+
+				if (my_mlx_pixel_get(&vars->s_tex, floor(vars->s_tex.img_width * (0.5 + sprite_pos)), floor((double) (i) / k)) != 0x0)
+					my_mlx_pixel_put(&vars->img, x, y + i, my_mlx_pixel_get(&vars->s_tex, floor(vars->s_tex.img_width * (0.5 + sprite_pos)), floor((double) (i) / k)));
+				i++;
 			}
-			i++;
 		}
-		if (h.sprite != NULL)
-			h.sprite = h.sprite->next;
-		if (v.sprite != NULL)
-			v.sprite = v.sprite->next;
+//		if (h.sprite != NULL)
+//		{
+//			t_sprite *tmp;
+//			tmp = h.sprite->next;
+//			free(h.sprite);
+//			h.sprite = tmp;
+//		}
+//		if (v.sprite != NULL)
+//		{
+//			t_sprite *tmp;
+//			tmp = v.sprite->next;
+//			free(v.sprite);
+//			v.sprite = tmp;
+//		}
+		sprite = NULL;
 	}
 }
 void				draw_walls (t_vars *vars)
@@ -563,7 +570,7 @@ void				move_player(t_vars *vars)
 	}
 
 	if (map[(int)(vars->player.y)][(int)(vars->player.x + dx)] != '1' &&
-			map[(int)(vars->player.y)][(int)(vars->player.x + dx)] != '2')
+		map[(int)(vars->player.y)][(int)(vars->player.x + dx)] != '2')
 	{
 		vars->player.x += dx;
 

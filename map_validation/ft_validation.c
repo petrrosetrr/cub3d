@@ -66,7 +66,7 @@ int is_textures_valid(t_struct *map_struct)
 		if (fd[i] > 0)
 			close(fd[i]);
 		else
-			return (1);
+			return (0);
 		i++;
 	}
 	return (1);
@@ -139,7 +139,6 @@ int is_map_valid(char **map)
 
 int map_validation(t_struct *map_struct)
 {
-	//TODO: валидация игрока
 	if (is_textures_valid(map_struct) == 0
 	|| is_colors_valid(map_struct) == 0
 	|| is_res_valid(map_struct) == 0
