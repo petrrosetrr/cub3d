@@ -141,10 +141,10 @@ void				add_sprite(t_wall *wall, t_vars *vars, double dx, double dy, char flag)
 	tmp = wall->sprite;
 	wall->sprite = malloc(sizeof(t_sprite));
 	wall->sprite->next = tmp;
-	wall->sprite->pos[0] = fabs((floor(vars->player.x + dx) + 0.5) - vars->player.x);
-	wall->sprite->pos[1] = fabs((floor(vars->player.y + dy) + 0.5) - vars->player.y);
-	wall->sprite->hit[0] = fabs(dx);
-	wall->sprite->hit[1] = fabs(dy);
+	wall->sprite->pos[0] = floor(vars->player.x + dx) + 0.5 - vars->player.x;
+	wall->sprite->pos[1] = floor(vars->player.y + dy) + 0.5 - vars->player.y;
+	wall->sprite->hit[0] = dx;
+	wall->sprite->hit[1] = dy;
 	wall->sprite->flag = flag;
 }
 t_wall				get_horizontal_intersection(t_vars *vars, double angle)
@@ -398,6 +398,32 @@ void 				draw_line(t_vars *vars, double x0, double y0, double x1, double y1, uns
 		i++;
 	}
 }
+
+double				get_sprite_pos(t_sprite *sprite, double ray_angle, double center_angle, double a)
+{
+	if (ray_angle < center_angle)
+		return (-1);
+//	if ((a >= 0 * DR && a <= 90 * DR) || (a >= -360 * DR && a <= -270 * DR))
+//	{
+//
+//	}
+//	else if ((a >= 90 * DR && a <= 180 * DR) || (a >= -270 * DR && a <= -180 * DR))
+//	{
+//		if (ray_angle > center_angle)
+//			return (-1);
+//	}
+//	else if ((a >= 180 * DR && a <= 270 * DR) || (a >= -180 * DR && a <= -90 * DR))
+//	{
+//		if (ray_angle > center_angle)
+//			return (-1);
+//	}
+//	else if ((a >= 270 * DR && a <= 360 * DR) || (a >= -90 * DR && a <= 0 * DR))
+//	{
+//		if (ray_angle > center_angle)
+//			return (-1);
+//	}
+	return (1);
+}
 void 				draw_sprite(t_vars *vars, t_wall h, t_wall v, int x, double a)
 {
 	t_sprite *sprite;
@@ -412,15 +438,14 @@ void 				draw_sprite(t_vars *vars, t_wall h, t_wall v, int x, double a)
 	double sprite_pos;
 
 	offset = 0;
-//	if (x == 495)
-//	{
-//		int a;
-//
-//		a = 100;
-//		while (a++ < vars->p_struct.res[1] - 1)
-//			my_mlx_pixel_put(&vars->img, x, a, 0x0);
-//		x = 495;
-//	}
+	if (x == vars->p_struct.res[0] * 0.8 + 50)
+	{
+		int a;
+
+		a = 100;
+		while (a++ < vars->p_struct.res[1] - 1)
+			my_mlx_pixel_put(&vars->img, x, a, 0x0);
+	}
 	while(h.sprite != NULL || v.sprite != NULL)
 	{
 		if (h.sprite == NULL)
@@ -447,20 +472,29 @@ void 				draw_sprite(t_vars *vars, t_wall h, t_wall v, int x, double a)
 			}
 		}
 		distnace = sqrt(pow(sprite->pos[0], 2) + pow(sprite->pos[1], 2));
-//		if (((distnace >= 7 && distnace <= 8) || (distnace >= 2.23 && distnace <= 2.5)) && a >= -20 * DR && a <= -19 * DR)
-//			printf("dist: %.3f angle: %.3f\n", distnace, a / DR);
 		if (h.distance < distnace || v.distance < distnace)
 			continue;
+//		center_angle = atan(fabs(sprite->pos[1] / sprite->pos[0]));
+//		ray_angle = atan(fabs(sprite->hit[1] / sprite->hit[0]));
+
 		center_angle = atan(sprite->pos[1] / sprite->pos[0]);
 		ray_angle = atan(sprite->hit[1] / sprite->hit[0]);
-		sprite_pos = sin(fabs(ray_angle - center_angle)) * distnace;
-		if (sprite->pos[0] == 0)
-			center_angle = 0;
-		if (sprite->hit[0] == 0)
-			ray_angle = 0;
-
-		if (ray_angle > center_angle)
-			sprite_pos = -sprite_pos;
+		sprite_pos = 1;
+		if (fabs(center_angle) > 45 * DR)
+		{
+			center_angle = atan(sprite->pos[0] / sprite->pos[1]);
+			ray_angle = atan(sprite->hit[0] / sprite->hit[1]);
+			sprite_pos = -1;
+//			if (x == vars->p_struct.res[0] * 0.8 + 50)
+		}
+		sprite_pos *= fabs(sin(fabs(ray_angle - center_angle)) * distnace);
+//		if (ray_angle < center_angle)
+//			sprite_pos = -sprite_pos;
+//		if (sprite->pos[0] == 0)
+//			center_angle = 0;
+//		if (sprite->hit[0] == 0)
+//			ray_angle = 0;
+		sprite_pos *= get_sprite_pos(sprite, ray_angle, center_angle, a);
 		wh = (int)(floor((double)vars->p_struct.res[1] / distnace));
 		if (wh > vars->p_struct.res[1])
 		{
@@ -469,7 +503,8 @@ void 				draw_sprite(t_vars *vars, t_wall h, t_wall v, int x, double a)
 		}
 		y = (vars->p_struct.res[1] - wh) / 2 + wh * 0.5;
 		k = (wh * 0.5 + offset)/ vars->s_tex.img_height;
-		printf("angle %.2f\n", a / DR);
+//		if (x == vars->p_struct.res[0] * 0.8 + 50)
+//			printf("ray %.2f center %.2f sprite_pos: %.2f angle %.2f hit x %.2f y %.2f center x %.2f y %.2f flag %c\n", ray_angle / DR, center_angle / DR, sprite_pos, a / DR, sprite->hit[0], sprite->hit[1], sprite->pos[0], sprite->pos[1], sprite->flag);
 //		if (h.sprite != NULL && h.sprite->next == NULL && sprite->flag == 'h')
 //			printf("distance: %f spr_pos %.2f ray_angle %.2f center_angle %.2f sprite->pos[0] %.2f sprite->pos[1] %.2f angle: %.2f flag %c\n", distnace, sprite_pos, ray_angle / DR, center_angle / DR, sprite->pos[0], sprite->pos[1], a / DR,
 //		 sprite->flag);

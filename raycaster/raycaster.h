@@ -10,8 +10,8 @@
 # define Q_KEY 12
 # define PI 3.1415926535
 # define DR 0.0174533
-# define START_ANGLE (-20)
-# define ANGLE_SPEED 0.05
+# define START_ANGLE (15)
+# define ANGLE_SPEED 0.02
 # define FOV 60
 
 typedef	struct	s_sprite
