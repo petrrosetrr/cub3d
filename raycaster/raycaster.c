@@ -58,9 +58,20 @@ int					redraw(t_vars *vars)
 	fill_fc(vars);
 	draw_walls(vars);
 	draw_map(vars);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img_ptr, 0, 0);
+	if (!vars->screenshot)
+		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img_ptr, 0, 0);
+	else
+		image_to_bmp(vars);
 	mlx_destroy_image(vars->mlx, vars->img.img_ptr);
 	return (1);
+}
+
+void 				set_ps(t_vars *vars)
+{
+	vars->pixel_size = ((vars->p_struct.res[0] / vars->p_struct.map_length) <
+	(vars->p_struct.res[1] / vars->p_struct.map_height)) ? vars->p_struct.res[0]
+	/ vars->p_struct.map_length : vars->p_struct.res[1] / vars->p_struct.map_height;
+	vars->pixel_size = (vars->pixel_size * 0.4) > 5 ? vars->pixel_size * 0.4 : 5;
 }
 
 void				create_window(t_vars *vars)
@@ -75,26 +86,30 @@ void				create_window(t_vars *vars)
 	vars->p_struct.res[1];
 	vars->win = mlx_new_window(vars->mlx, vars->p_struct.res[0],
 	vars->p_struct.res[1], "cub3d");
-	vars->pixel_size = ((vars->p_struct.res[0] / vars->p_struct.map_length) <
-	(vars->p_struct.res[1] / vars->p_struct.map_height)) ? vars->p_struct.res[0]
-	/ vars->p_struct.map_length : vars->p_struct.res[1] / vars->p_struct.
-	map_height;
-	vars->pixel_size = (vars->pixel_size * 0.4) > 5 ? vars->pixel_size *
-	0.4 : 5;
+	set_ps(vars);
 }
 
-void				raycaster(t_struct *p_struct)
+void				raycaster(t_struct *p_struct, int screenshot)
 {
 	t_vars vars;
 
+	vars.screenshot = screenshot;
 	vars.p_struct = *p_struct;
 	vars.mlx = mlx_init();
-	create_window(&vars);
 	set_player(&vars);
 	load_textures(&vars);
-	mlx_hook(vars.win, 02, 0, pressed_hook, &vars);
-	mlx_hook(vars.win, 03, 0, released_hook, &vars);
-	mlx_hook(vars.win, 17, 0, exit_hook, &vars);
-	mlx_loop_hook(vars.mlx, redraw, &vars);
-	mlx_loop(vars.mlx);
+	if (!screenshot)
+	{
+		create_window(&vars);
+		mlx_hook(vars.win, 02, 0, pressed_hook, &vars);
+		mlx_hook(vars.win, 03, 0, released_hook, &vars);
+		mlx_hook(vars.win, 17, 0, exit_hook, &vars);
+		mlx_loop_hook(vars.mlx, redraw, &vars);
+		mlx_loop(vars.mlx);
+	}
+	else
+	{
+		set_ps(&vars);
+		redraw(&vars);
+	}
 }

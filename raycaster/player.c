@@ -59,10 +59,10 @@ void				move_player(t_vars *vars, double dx, double dy)
 	check_walls(vars, dx, dy);
 }
 
-int					set_player_angle(char c)
+double				set_player_angle(char c)
 {
 	if (c == 'N')
-		return (-90 * DR);
+		return (270 * DR);
 	else if (c == 'S')
 		return (90 * DR);
 	else if (c == 'W')

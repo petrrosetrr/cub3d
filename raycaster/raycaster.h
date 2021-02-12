@@ -91,6 +91,7 @@ typedef struct			s_vars {
 	t_texture			we_tex;
 	t_texture			ea_tex;
 	t_texture			s_tex;
+	int 				screenshot;
 }						t_vars;
 
 typedef struct			s_f_norm
@@ -145,6 +146,7 @@ typedef struct			s_ff
 	double				angle;
 }						t_ff;
 
+void					image_to_bmp(t_vars *vars);
 void					my_mlx_pixel_put(
 						t_image *image, int x, int y, int color);
 int						my_mlx_pixel_get(t_texture *texture, int x, int y);

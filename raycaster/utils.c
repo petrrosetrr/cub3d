@@ -33,7 +33,6 @@ int					exit_hook(int keycode, t_vars *vars)
 {
 	(void)keycode;
 	(void)vars;
-	write(1, "EXIT HOOK\n", ft_strlen("EXIT HOOK\n"));
 	exit(0);
 }
 
