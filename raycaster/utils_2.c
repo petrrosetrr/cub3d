@@ -65,4 +65,5 @@ void			set_ps(t_vars *vars)
 	(vars->p_struct.res[1] / vars->p_struct.map_height)) ?
 	vars->p_struct.res[0] / vars->p_struct.map_length : vars->p_struct.res[1] /
 	vars->p_struct.map_height;
+	vars->pixel_size *= 0.5;
 }
