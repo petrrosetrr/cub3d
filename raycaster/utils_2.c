@@ -6,7 +6,7 @@
 /*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/10 16:58:59 by jalease           #+#    #+#             */
-/*   Updated: 2021/02/13 06:24:27 by jalease          ###   ########.fr       */
+/*   Updated: 2021/02/13 07:10:16 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,4 @@ void			set_ps(t_vars *vars)
 	(vars->p_struct.res[1] / vars->p_struct.map_height)) ?
 	vars->p_struct.res[0] / vars->p_struct.map_length : vars->p_struct.res[1] /
 	vars->p_struct.map_height;
-	vars->pixel_size = (vars->pixel_size * 0.4) > 5 ?
-	vars->pixel_size * 0.4 : 5;
 }
