@@ -32,13 +32,16 @@ SRCS	=	main.c \
 
 NAME    =   cub3d.out
 
-HEAD	=	cub3d.h ./raycaster/raycaster.h
+HEAD	=	cub3d.h \
+ 			./raycaster/raycaster.h \
+ 			./map_validation/ft_validation.c \
+ 			./parser/ft_parser.h
 
 LIBFT	=	./libft/libft.a
 
 OBJS    =   $(SRCS:.c=.o)
 
-GCC     =   gcc -Wall -Wextra -Werror
+GCC     =   gcc -Wall -Wextra -g -Werror
 
 RM      =   rm -f
 
@@ -53,14 +56,14 @@ O       =   -o
 			$(GCC) $(C) $< $(O) $(<:.c=.o)
 all:		$(NAME)
 
-$(NAME):    $(OBJS) $(HEAD)
+$(NAME):    $(OBJS)
 			make -C ./libft
 			$(GCC) $(OBJS) ./libft/libft.a libmlx.dylib -o $(NAME)
 
 clean:
 			$(RM) $(OBJS)
 			make clean -C ./libft
-
+$(OBJS):	$(HEAD)
 fclean:		clean
 			$(RM) $(NAME)
 			make fclean -C ./libft
