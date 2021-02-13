@@ -78,7 +78,7 @@ void	image_to_bmp(t_vars *vars)
 	f_size = 54 + (vars->img.line_length * vars->p_struct.res[1]);
 	if ((fd = open("screenshot.bmp", O_CREAT | O_WRONLY | O_TRUNC, 0777)) < 0)
 	{
-		write(2, "error", ft_strlen("error"));
+		ft_putstr_fd("Error\n", 2);
 		exit(1);
 	}
 	add_header(vars, fd, f_size);

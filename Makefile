@@ -30,7 +30,7 @@ SRCS	=	main.c \
 			raycaster/textures.c \
 			raycaster/save.c
 
-NAME    =   cub3d.out
+NAME    =   cub3D
 
 HEAD	=	cub3d.h \
  			./raycaster/raycaster.h \
@@ -59,6 +59,7 @@ all:		$(NAME)
 $(NAME):    $(OBJS)
 			make -C ./libft
 			$(GCC) $(OBJS) ./libft/libft.a libmlx.dylib -o $(NAME)
+bonus:		re
 
 clean:
 			$(RM) $(OBJS)

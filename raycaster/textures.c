@@ -27,7 +27,7 @@ void
 	mlx_xpm_file_to_image(vars->mlx, vars->p_struct.s, &vars->s_tex.
 	img_width, &vars->s_tex.img_height)) == NULL)
 	{
-		write(2, "error", ft_strlen("error"));
+		ft_putstr_fd("Error\n", 2);
 		exit(1);
 	}
 	vars->no_tex.addr = mlx_get_data_addr(vars->no_tex.img, &vars->no_tex.bpp,
@@ -45,8 +45,14 @@ void
 void
 	put_texture(t_vars *vars, t_f_norm3 *f, int i, char flag)
 {
-	t_texture *t;
+	t_texture	*t;
+	int			i_f;
 
+	i_f = 0;
+	i_f = (flag == 'n') ? 0 : i_f;
+	i_f = (flag == 's') ? 1 : i_f;
+	i_f = (flag == 'w') ? 2 : i_f;
+	i_f = (flag == 'e') ? 3 : i_f;
 	t = NULL;
 	t = (flag == 'n') ? &vars->no_tex : t;
 	t = (flag == 's') ? &vars->so_tex : t;
@@ -54,7 +60,7 @@ void
 	t = (flag == 'e') ? &vars->ea_tex : t;
 	my_mlx_pixel_put(&vars->img, f->x, f->y + i, my_mlx_pixel_get(
 	t, floor(t->img_width * f->intersection->wall_pos), floor(
-	(double)(i + f->offset) / f->k[0])));
+	(double)(i + f->offset) / f->k[i_f])));
 }
 
 void
@@ -79,10 +85,10 @@ void
 			if ((f->angle >= 0 && f->angle <= 90 * DR) || (f->angle >= 270 * DR
 			&& f->angle <= 360 * DR) || (f->angle < 0 && f->angle >= -90 * DR)
 			|| (f->angle <= -270 * DR && f->angle >= -360 * DR))
-				put_texture(vars, f, i, 'e');
+				put_texture(vars, f, i, 'w');
 			else if ((f->angle > 90 * DR && f->angle < 270 * DR) ||
 			(f->angle < -90 * DR && f->angle > -270 * DR))
-				put_texture(vars, f, i, 'w');
+				put_texture(vars, f, i, 'e');
 		}
 	}
 }

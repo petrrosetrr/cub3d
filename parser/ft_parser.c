@@ -99,7 +99,7 @@ t_struct	ft_parser(char *file_name)
 	if (!is_f_valid(file_name) || !file_to_array(file_name, &map_struct)
 		|| (map_struct.map_start = get_map_start(map_struct.map)) < 8)
 	{
-		write(2, "Map error\n", ft_strlen("Map error\n"));
+		ft_putstr_fd("Error\n", 2);
 		exit(1);
 	}
 	i = 0;
@@ -110,7 +110,7 @@ t_struct	ft_parser(char *file_name)
 		|| get_textures(&map_struct, map_struct.map[i])
 		|| is_empty(map_struct.map[i])))
 		{
-			write(2, "Map error\n", ft_strlen("Map error\n"));
+			ft_putstr_fd("Error\n", 2);
 			exit(1);
 		}
 		i++;

@@ -64,7 +64,7 @@ int	map_validation(t_struct *map_struct)
 	|| is_res_valid(map_struct) == 0
 	|| is_map_valid(&(map_struct->map[map_struct->map_start])) == 0)
 	{
-		write(2, "Map is invalid\n", ft_strlen("Map is invalid\n"));
+		ft_putstr_fd("Error\n", 2);
 		exit(1);
 	}
 	return (1);

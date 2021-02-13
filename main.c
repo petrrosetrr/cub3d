@@ -28,7 +28,7 @@ int	main(int argc, char *argv[])
 				raycaster(&map, 1);
 			else
 			{
-				write(2, "error", ft_strlen("error"));
+				ft_putstr_fd("Error\n", 2);
 				exit(1);
 			}
 		}

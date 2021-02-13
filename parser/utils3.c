@@ -23,6 +23,23 @@ void		set_values(t_struct *ms, char **rgb_arr, int spf)
 	arr[2] = ft_atoi(rgb_arr[2]);
 }
 
+int			check_commas(char *line)
+{
+	int i;
+
+	i = 0;
+	while(*line != '\0')
+	{
+		if (*line == ',')
+			i++;
+		line++;
+	}
+	if (i == 2)
+		return (1);
+	else
+		return (0);
+}
+
 int			get_color(t_struct *ms, char *line, char *sp, int spf)
 {
 	char		**arr;
@@ -32,14 +49,14 @@ int			get_color(t_struct *ms, char *line, char *sp, int spf)
 	if (flag[spf] != 0)
 		return (0);
 	if ((arr = ft_split(line, ' ')) != NULL && ft_strncmp(arr[0], sp, 1)
-	== 0 && ft_strlen(arr[0]) == 1)
+	== 0 && ft_strlen(arr[0]) == 1 && check_commas(arr[1]))
 	{
 		flag[spf] = 1;
 		if ((n_of_lines(arr) == 2) && (rgb_arr = ft_split(arr[1], ','))
-		!= NULL && n_of_lines(rgb_arr) == 3)
+									  != NULL && n_of_lines(rgb_arr) == 3)
 		{
 			if (is_only_digits(rgb_arr[0]) &&
-			is_only_digits(rgb_arr[1]) && is_only_digits(rgb_arr[2]))
+				is_only_digits(rgb_arr[1]) && is_only_digits(rgb_arr[2]))
 			{
 				set_values(ms, rgb_arr, spf);
 				return (free_array(arr, 1) && free_array(rgb_arr, 1));
