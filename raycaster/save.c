@@ -6,7 +6,7 @@
 /*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/12 19:26:15 by jalease           #+#    #+#             */
-/*   Updated: 2021/02/12 19:26:35 by jalease          ###   ########.fr       */
+/*   Updated: 2021/02/13 03:31:13 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ void	add_data(t_vars *vars, int fd)
 	int a;
 
 	i = vars->p_struct.res[1] - 1;
-	while(i >= 0)
+	while (i >= 0)
 	{
 		k = 0;
-		while(k < vars->p_struct.res[0])
+		while (k < vars->p_struct.res[0])
 		{
 			a = get_pixel(&vars->img, k, i);
 			write(fd, &a, vars->img.bpp / 8);
@@ -53,7 +53,7 @@ void	add_data(t_vars *vars, int fd)
 	}
 }
 
-void 	add_header(t_vars *vars, int fd, int f_size)
+void	add_header(t_vars *vars, int fd, int f_size)
 {
 	unsigned char header[54];
 

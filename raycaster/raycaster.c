@@ -6,7 +6,7 @@
 /*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/10 18:50:58 by jalease           #+#    #+#             */
-/*   Updated: 2021/02/12 00:27:59 by jalease          ###   ########.fr       */
+/*   Updated: 2021/02/13 06:20:16 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,6 @@ int					redraw(t_vars *vars)
 		image_to_bmp(vars);
 	mlx_destroy_image(vars->mlx, vars->img.img_ptr);
 	return (1);
-}
-
-void 				set_ps(t_vars *vars)
-{
-	vars->pixel_size = ((vars->p_struct.res[0] / vars->p_struct.map_length) <
-	(vars->p_struct.res[1] / vars->p_struct.map_height)) ? vars->p_struct.res[0]
-	/ vars->p_struct.map_length : vars->p_struct.res[1] / vars->p_struct.map_height;
-	vars->pixel_size = (vars->pixel_size * 0.4) > 5 ? vars->pixel_size * 0.4 : 5;
 }
 
 void				create_window(t_vars *vars)

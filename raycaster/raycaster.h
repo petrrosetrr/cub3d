@@ -6,7 +6,7 @@
 /*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 20:00:41 by jalease           #+#    #+#             */
-/*   Updated: 2021/02/12 00:31:05 by jalease          ###   ########.fr       */
+/*   Updated: 2021/02/13 06:25:26 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,10 @@
 # define D_KEY 2
 # define ESC_KEY 53
 # define SPEED 0.1
-# define E_KEY 14
-# define Q_KEY 12
+# define E_KEY 124
+# define Q_KEY 123
 # define PI 3.1415926535
 # define DR 0.0174533
-# define START_ANGLE (15)
 # define ANGLE_SPEED 0.05
 # define FOV 60
 
@@ -91,7 +90,7 @@ typedef struct			s_vars {
 	t_texture			we_tex;
 	t_texture			ea_tex;
 	t_texture			s_tex;
-	int 				screenshot;
+	int					screenshot;
 }						t_vars;
 
 typedef struct			s_f_norm
@@ -174,4 +173,5 @@ void					draw_texture(
 void					load_textures(t_vars *vars);
 
 void					draw_map(t_vars *vars);
+void					set_ps(t_vars *vars);
 #endif

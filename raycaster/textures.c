@@ -6,7 +6,7 @@
 /*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 22:42:46 by jalease           #+#    #+#             */
-/*   Updated: 2021/02/12 00:28:49 by jalease          ###   ########.fr       */
+/*   Updated: 2021/02/13 06:24:48 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void
 	t = (flag == 's') ? &vars->so_tex : t;
 	t = (flag == 'w') ? &vars->we_tex : t;
 	t = (flag == 'e') ? &vars->ea_tex : t;
-	my_mlx_pixel_put(&vars->img, f->x, f->y + i,my_mlx_pixel_get(
+	my_mlx_pixel_put(&vars->img, f->x, f->y + i, my_mlx_pixel_get(
 	t, floor(t->img_width * f->intersection->wall_pos), floor(
 	(double)(i + f->offset) / f->k[0])));
 }

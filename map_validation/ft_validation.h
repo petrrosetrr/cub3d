@@ -1,28 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*   ft_validation.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/29 12:03:31 by jalease           #+#    #+#             */
-/*   Updated: 2020/10/29 15:05:40 by jalease          ###   ########.fr       */
+/*   Created: 2021/02/13 05:32:52 by jalease           #+#    #+#             */
+/*   Updated: 2021/02/13 06:13:40 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef FT_VALIDATION_H
+# define FT_VALIDATION_H
 
-void	ft_bzero(void *s, size_t n)
+typedef struct	s_ms
 {
-	size_t i;
+	int			i;
+	int			k;
+	int			flag;
+	char		*str;
+}				t_ms;
 
-	i = 0;
-	if (n > 0)
-	{
-		while (i < n)
-		{
-			*((unsigned char*)s + i) = 0;
-			i++;
-		}
-	}
-}
+typedef struct	s_cz
+{
+	int			length[3];
+	char		*str;
+	char		*prev;
+	char		*this;
+	char		*next;
+}				t_cz;
+int				check_zero(int i, char *prev, char *this, char *next);\
+int				is_map_valid(char **map);
+#endif

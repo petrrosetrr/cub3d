@@ -501,11 +501,11 @@ let shaders = """
 using namespace metal;
 
 struct VertexIn {
-    float4 position;
+    float4 pos;
     float4 UV;
 };
 struct VertexOut {
-    float4 position [[ position ]];
+    float4 pos [[ pos ]];
     float4 color;
     float2 UV;
 };
@@ -523,10 +523,10 @@ uint vertexID [[ vertex_id ]])
 {
     VertexOut vOut;
     float4 start = float4((2.0*uni.dest_pos.x)/(uni.dest_size.x-1.0) - 1.0, 1.0 - (2.0*uni.dest_pos.y)/(uni.dest_size.y-1.0) - (uni.dest_sub.y*2.0)/uni.dest_size.y, 0.0, 0.0);
- /*   vOut.position = (start + (vertices[vertexID].position + 1.0) * float4(uni.dest_sub, 0.0, 0.0))/float4(uni.dest_size, 1.0, 1.0); */
+ /*   vOut.pos = (start + (vertices[vertexID].pos + 1.0) * float4(uni.dest_sub, 0.0, 0.0))/float4(uni.dest_size, 1.0, 1.0); */
 
-    vOut.position = float4(start.x+((vertices[vertexID].position.x + 1.0)*uni.dest_sub.x)/(uni.dest_size.x),
-    		    	   start.y+((vertices[vertexID].position.y + 1.0)*uni.dest_sub.y)/(uni.dest_size.y), 0.0, 1.0);
+    vOut.pos = float4(start.x+((vertices[vertexID].pos.x + 1.0)*uni.dest_sub.x)/(uni.dest_size.x),
+    		    	   start.y+((vertices[vertexID].pos.y + 1.0)*uni.dest_sub.y)/(uni.dest_size.y), 0.0, 1.0);
 
     vOut.UV = (uni.origin_pos + float2(vertices[vertexID].UV.x, vertices[vertexID].UV.y)*(uni.origin_sub-1.0))/(uni.origin_size-1.0);
     vOut.color = uni.color;

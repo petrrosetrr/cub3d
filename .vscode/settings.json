@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "raycaster.h": "c",
+        "cub3d.h": "c",
+        "ft_parser.h": "c"
+    }
+}
