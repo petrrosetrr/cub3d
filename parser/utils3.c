@@ -6,7 +6,7 @@
 /*   By: jalease <jalease@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/13 03:41:26 by jalease           #+#    #+#             */
-/*   Updated: 2021/02/13 06:27:02 by jalease          ###   ########.fr       */
+/*   Updated: 2021/02/16 09:03:02 by jalease          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int			check_commas(char *line)
 	int i;
 
 	i = 0;
-	while(*line != '\0')
+	while (*line != '\0')
 	{
 		if (*line == ',')
 			i++;
@@ -53,7 +53,7 @@ int			get_color(t_struct *ms, char *line, char *sp, int spf)
 	{
 		flag[spf] = 1;
 		if ((n_of_lines(arr) == 2) && (rgb_arr = ft_split(arr[1], ','))
-									  != NULL && n_of_lines(rgb_arr) == 3)
+		!= NULL && n_of_lines(rgb_arr) == 3)
 		{
 			if (is_only_digits(rgb_arr[0]) &&
 				is_only_digits(rgb_arr[1]) && is_only_digits(rgb_arr[2]))
